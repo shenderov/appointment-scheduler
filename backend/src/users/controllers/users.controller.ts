@@ -14,12 +14,12 @@ export class UsersController {
     return this.usersService.create(dto);
   }
 
-@Post('/auth/login')
-async login(@Body() dto: LoginDto): Promise<{ access_token: string }> {
-  return this.usersService.login(dto);
-}
+  @Post('/auth/login')
+  async login(@Body() dto: LoginDto): Promise<{ access_token: string }> {
+    return this.usersService.login(dto);
+  }
 
-    @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'))
   @Get()
   findAll(): Promise<User[]> {
     return this.usersService.findAll();

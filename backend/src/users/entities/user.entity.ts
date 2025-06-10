@@ -1,22 +1,31 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+} from 'typeorm';
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column()
-  name: string;
+  name!: string;
 
   @Column({ unique: true })
-  email: string;
+  email!: string;
 
   @Column()
-  passwordHash: string;
+  passwordHash!: string;
 
-  @Column({ type: 'enum', enum: ['client', 'provider', 'admin'], default: 'client' })
-  role: 'client' | 'provider' | 'admin';
+  @Column({
+    type: 'enum',
+    enum: ['client', 'provider', 'admin'],
+    default: 'client',
+  })
+  role!: 'client' | 'provider' | 'admin';
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 }
