@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { Service } from '../../services/entities/services.entity';
 import { User } from '../../users/entities/user.entity';
 import { Provider, Specialty } from '../../providers/entities/providers.entity';
-import bcrypt from 'bcryptjs';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class SeederService implements OnModuleInit {

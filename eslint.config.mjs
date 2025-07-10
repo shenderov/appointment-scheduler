@@ -13,7 +13,12 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default [
   {
-    ignores: ['**/dist/**', '**/node_modules/**'],
+    ignores: [
+      '**/dist/**',
+      '**/node_modules/**',
+      '**/vite.config.*.timestamp*',
+      '**/vitest.config.*.timestamp*',
+    ],
   },
   js.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
@@ -50,7 +55,7 @@ export default [
       // React
       'react/jsx-uses-react': 'off',
       'react/react-in-jsx-scope': 'off',
-      ...reactHooks.configs.recommended.rules,
+      ...(reactHooks.configs?.recommended?.rules ?? {}),
       'react-refresh/only-export-components': [
         'warn',
         { allowConstantExport: true },
@@ -72,7 +77,10 @@ export default [
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {
-        project: ['./backend/tsconfig.app.json', './backend/tsconfig.test.json'],
+        project: [
+          './backend/tsconfig.app.json',
+          './backend/tsconfig.test.json',
+        ],
         tsconfigRootDir: __dirname,
       },
       sourceType: 'module',
