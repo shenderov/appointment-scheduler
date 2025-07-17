@@ -9,6 +9,7 @@ import {
   Alert,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import type { LoginDto as LoginRequest } from '@shared/models';
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
@@ -21,15 +22,19 @@ const LoginForm = () => {
     setError('');
 
     try {
-      const res = await axios.post('http://localhost:3000/users/auth/login', {
+      const data: LoginRequest = {
         email,
         password,
-      });
+      };
+      const res = await axios.post('http://localhost:3000/auth/login', data);
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-      const token = res.data.access_token;
-      localStorage.setItem('token', token);
-      navigate('/dashboard'); // or wherever
+      const token = res.data?.access_token;
+      if (token) {
+        localStorage.setItem('token', token);
+        navigate('/dashboard');
+      } else {
+        setError('No token received');
+      }
     } catch (err) {
       console.error('Login error:', err);
       setError('Invalid email or password');
@@ -40,7 +45,6 @@ const LoginForm = () => {
     <Container maxWidth="xs">
       <Box
         component="form"
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onSubmit={handleSubmit}
         sx={{
           mt: 8,

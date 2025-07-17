@@ -2,14 +2,6 @@
   "extends": "./tsconfig.app.json",
   "exclude": ["test", "**/*.spec.ts"],
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@appointments/*": ["src/appointments/*"],
-      "@auth/*": ["src/auth/*"],
-      "@common/*": ["src/common/*"],
-      "@providers/*": ["src/providers/*"],
-      "@services/*": ["src/services/*"],
-      "@users/*": ["src/users/*"]
-    }
-}
+    "outDir": "../../dist/"
+  }
 }

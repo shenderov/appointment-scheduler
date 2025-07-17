@@ -4,7 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { LoginDto } from '@auth/dtos/login.dto';
+import { LoginDto } from '@shared/models';
 import { Repository } from 'typeorm';
 import { User } from '@users/entities/user.entity';
 import * as bcrypt from 'bcrypt';

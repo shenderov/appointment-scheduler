@@ -1,7 +1,8 @@
 {
   "files": [],
   "references": [
-    { "path": "frontend" },
-    { "path": "backend" }
+    { "path": "apps/frontend" },
+    { "path": "apps/backend" },
+    { "path": "libs/shared-models" }
   ]
 }

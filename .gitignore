@@ -1,10 +1,13 @@
 # Node and package managers
 /node_modules
 apps/*/node_modules
+libs/*/node_modules
 dist/
 apps/*/dist/
+libs/*/dist/
 build/
 apps/*/build/
+libs/*/build/
 pnpm-lock.yaml
 .pnpm-debug.log*
 
@@ -13,6 +16,7 @@ pnpm-lock.yaml
 .nx/workspace-data
 .cursor/rules/nx-rules.mdc
 .github/instructions/nx.instructions.md
+apps/**/.nx/
 
 # Vite/TypeScript temporary files
 vite.config.*.timestamp*

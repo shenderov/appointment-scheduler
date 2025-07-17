@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "nx serve",
-    "build": "tsc -b && nx vite:build",
-    "lint": "nx eslint:lint",
-    "preview": "nx vite:preview"
+    "build": "nx build frontend",
+    "lint": "nx lint frontend",
+    "preview": "nx serve frontend --configuration=preview"
   },
   "dependencies": {
     "@emotion/react": "^11.13.3",
@@ -24,6 +24,37 @@
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
     "@vitejs/plugin-react": "^4.3.3",
-    "vite": "^5.4.10"
+    "vite": "7.0.5",
+    "vite-tsconfig-paths": "5.1.4"
+  },
+  "nx": {
+    "targets": {
+      "build": {
+        "executor": "@nx/vite:build",
+        "options": {
+          "outputPath": "dist/apps/frontend",
+          "configFile": "apps/frontend/vite.config.ts",
+          "projectRoot": "apps/frontend",
+          "tsConfig": "apps/frontend/tsconfig.app.json"
+        }
+      },
+      "serve": {
+        "executor": "@nx/vite:dev",
+        "options": {
+          "configFile": "apps/frontend/vite.config.ts",
+          "projectRoot": "apps/frontend",
+          "tsConfig": "apps/frontend/tsconfig.app.json"
+        }
+      },
+      "preview": {
+        "executor": "@nx/vite:preview",
+        "options": {
+          "outputPath": "dist/apps/frontend",
+          "configFile": "apps/frontend/vite.config.ts",
+          "projectRoot": "apps/frontend",
+          "tsConfig": "apps/frontend/tsconfig.app.json"
+        }
+      }
+    }
   }
 }

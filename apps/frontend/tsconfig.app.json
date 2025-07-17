@@ -1,29 +1,18 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
-    "target": "ES2020",
-    "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable", "esnext"],
-    "module": "ESNext",
-    "skipLibCheck": true,
-    "baseUrl": "src",
-    "paths": {
-      "@*": ["*"]
-    },
-
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "verbatimModuleSyntax": true,
-    "moduleDetection": "force",
-    "noEmit": true,
+    "outDir": "../../dist/apps/frontend",
     "jsx": "react-jsx",
-
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "erasableSyntaxOnly": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "paths": {
+      "@components/*": ["apps/frontend/src/components/*"],
+      "@layout/*": ["apps/frontend/src/layout/*"],
+      "@assets/*": ["apps/frontend/src/assets/*"],
+      "@router/*": ["apps/frontend/src/router/*"],
+      "@utils/*": ["apps/frontend/src/utils/*"],
+      "@views/*": ["apps/frontend/src/views/*"],
+      "@shared/models": ["libs/shared-models"]
+    }
   },
-  "include": ["src", "vite.config.ts"]
+  "include": ["src"],
+  "exclude": ["node_modules", "dist", "test"]
 }
