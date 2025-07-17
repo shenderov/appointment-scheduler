@@ -1,4 +1,5 @@
 import { IsEmail, IsNotEmpty, IsString, IsIn } from 'class-validator';
+import { Role, CreatableRoles } from '@shared/models/enums';
 
 export class CreateUserDto {
   @IsNotEmpty()
@@ -12,6 +13,6 @@ export class CreateUserDto {
   @IsString()
   password!: string;
 
-  @IsIn(['client', 'provider', 'admin'])
-  role!: 'client' | 'provider' | 'admin';
+  @IsIn(CreatableRoles)
+  role!: Role;
 }

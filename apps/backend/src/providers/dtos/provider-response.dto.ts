@@ -1,4 +1,4 @@
-import { UserResponseDto } from '../../users/dtos/user-response.dto';
+import { UserResponseDto } from '@shared/models/dtos';
 
 export class ProviderResponseDto {
   id!: string;

@@ -1,11 +1,11 @@
-// src/seeder/seeder.service.ts
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Service } from '../../services/entities/services.entity';
-import { User } from '../../users/entities/user.entity';
-import { Provider, Specialty } from '../../providers/entities/providers.entity';
+import { Service } from '@services/entities/services.entity';
+import { User } from '@users/entities/user.entity';
+import { Provider, Specialty } from '@providers/entities/providers.entity';
 import * as bcrypt from 'bcrypt';
+import { Role } from '@shared/models/enums';
 
 @Injectable()
 export class SeederService implements OnModuleInit {
@@ -330,7 +330,7 @@ export class SeederService implements OnModuleInit {
           name: data.name,
           email: data.email,
           passwordHash,
-          role: 'provider',
+          role: Role.Provider,
         });
 
         await this.providerRepo.save({
@@ -352,7 +352,7 @@ export class SeederService implements OnModuleInit {
 
   private async seedAdmins() {
     const adminCount = await this.userRepo.count({
-      where: { role: 'admin' },
+      where: { role: Role.Admin },
     });
     console.log('Admins in DB: ', adminCount);
     if (adminCount > 0) {
@@ -365,13 +365,13 @@ export class SeederService implements OnModuleInit {
         name: 'Admin One',
         email: 'admin1@example.com',
         passwordHash,
-        role: 'admin',
+        role: Role.Admin,
       },
       {
         name: 'Admin Two',
         email: 'admin2@example.com',
         passwordHash,
-        role: 'admin',
+        role: Role.Admin,
       },
     ];
     await this.userRepo.save(admins);
@@ -380,7 +380,7 @@ export class SeederService implements OnModuleInit {
 
   private async seedClients() {
     const clientCount = await this.userRepo.count({
-      where: { role: 'client' },
+      where: { role: Role.Client },
     });
     console.log('Users in DB: ', clientCount);
     if (clientCount > 0) {
@@ -392,7 +392,7 @@ export class SeederService implements OnModuleInit {
       name: `Client ${i + 1}`,
       email: `client${i + 1}@example.com`,
       passwordHash,
-      role: 'client',
+      role: Role.Client,
     }));
     await this.userRepo.save(clients);
     console.log('✅ Seeded 20 clients');

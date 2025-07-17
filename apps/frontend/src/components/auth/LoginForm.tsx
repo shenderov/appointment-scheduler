@@ -9,29 +9,50 @@ import {
   Alert,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import type { LoginDto as LoginRequest } from '@shared/models';
+import type { LoginDto as LoginRequest } from '@shared/models/dtos';
+import { useAuth } from '@context/AuthContext';
+import { Role } from '@shared/models/enums';
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { updateUser } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
     try {
-      const data: LoginRequest = {
-        email,
-        password,
-      };
+      const data: LoginRequest = { email, password };
       const res = await axios.post('http://localhost:3000/auth/login', data);
 
       const token = res.data?.access_token;
       if (token) {
         localStorage.setItem('token', token);
-        navigate('/dashboard');
+
+        // Fetch current user
+        const userRes = await axios.get('http://localhost:3000/users/me', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        updateUser(userRes.data);
+
+        // Redirect based on role
+        switch (userRes.data.role) {
+          case Role.Admin:
+          case Role.Provider:
+            navigate('/dashboard');
+            break;
+          case Role.Client:
+            navigate('/profile');
+            break;
+          default:
+            navigate('/');
+        }
       } else {
         setError('No token received');
       }

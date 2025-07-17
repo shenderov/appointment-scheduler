@@ -3,7 +3,10 @@
   "compilerOptions": {
     "outDir": "../../dist/libs",
     "declaration": true,
-    "types": ["node"]
+    "types": ["node"],
+    "paths": {
+      "@shared/models/*": ["libs/shared-models/*"]
+    }
   },
   "include": ["src/**/*.ts"]
 }

@@ -4,11 +4,12 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { LoginDto } from '@shared/models';
+import { LoginDto } from '@shared/models/dtos';
 import { Repository } from 'typeorm';
 import { User } from '@users/entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Role } from '@shared/models/enums';
 
 @Injectable()
 export class AuthService {
@@ -22,7 +23,7 @@ export class AuthService {
     id: string;
     name: string;
     email: string;
-    role: string;
+    role: Role;
   }): string {
     const payload = {
       sub: user.id,

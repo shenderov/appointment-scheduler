@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 import { useState } from 'react';
 import { Grid, Typography, Box, Button } from '@mui/material';
-import TeamMemberCard from './TeamMemberCard';
+import TeamMemberCard from '@components/team/TeamMemberCard';
 
 const teamMembers = [
   { name: 'Dr. Alice Martin', role: 'Family Medicine' },

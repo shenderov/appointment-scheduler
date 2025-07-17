@@ -11,7 +11,7 @@
       "@providers/*": ["apps/backend/src/providers/*"],
       "@services/*": ["apps/backend/src/services/*"],
       "@users/*": ["apps/backend/src/users/*"],
-      "@shared/models": ["libs/shared-models"]
+      "@shared/models/*": ["libs/shared-models/*"]
     }
   },
   "include": ["src"],

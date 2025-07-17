@@ -4,6 +4,7 @@ import {
   Column,
   CreateDateColumn,
 } from 'typeorm';
+import { Role, CreatableRoles } from "@shared/models/enums";
 
 @Entity()
 export class User {
@@ -21,10 +22,10 @@ export class User {
 
   @Column({
     type: 'enum',
-    enum: ['client', 'provider', 'admin'],
+    enum: CreatableRoles,
     default: 'client',
   })
-  role!: 'client' | 'provider' | 'admin';
+  role!: Role;
 
   @CreateDateColumn()
   createdAt!: Date;

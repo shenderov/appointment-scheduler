@@ -3,14 +3,17 @@
   "compilerOptions": {
     "outDir": "../../dist/apps/frontend",
     "jsx": "react-jsx",
+    "baseUrl": ".",
     "paths": {
-      "@components/*": ["apps/frontend/src/components/*"],
-      "@layout/*": ["apps/frontend/src/layout/*"],
-      "@assets/*": ["apps/frontend/src/assets/*"],
-      "@router/*": ["apps/frontend/src/router/*"],
-      "@utils/*": ["apps/frontend/src/utils/*"],
-      "@views/*": ["apps/frontend/src/views/*"],
-      "@shared/models": ["libs/shared-models"]
+      "@api/*": ["src/api/*"],
+      "@components/*": ["src/components/*"],
+      "@context/*": ["src/context/*"],
+      "@layout/*": ["src/layout/*"],
+      "@assets/*": ["src/assets/*"],
+      "@router/*": ["src/router/*"],
+      "@utils/*": ["src/utils/*"],
+      "@views/*": ["src/views/*"],
+      "@shared/models/*": ["../../libs/shared-models/*"]
     }
   },
   "include": ["src"],

@@ -11,12 +11,13 @@ import {
 } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import AccountCircle from '@mui/icons-material/AccountCircle';
+import { Role } from '@shared/models/enums';
 
 interface NavbarProps {
-  role?: 'guest' | 'user' | 'provider' | 'admin';
+  role: Role;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ role = 'guest' }) => {
+const Navbar: React.FC<NavbarProps> = ({ role }) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -29,7 +30,7 @@ const Navbar: React.FC<NavbarProps> = ({ role = 'guest' }) => {
 
   const renderMenuItems = () => {
     switch (role) {
-      case 'admin':
+      case Role.Admin:
         return (
           <>
             <Button component={RouterLink} to="/dashboard" color="inherit">
@@ -43,8 +44,7 @@ const Navbar: React.FC<NavbarProps> = ({ role = 'guest' }) => {
             </Button>
           </>
         );
-
-      case 'provider':
+      case Role.Provider:
         return (
           <>
             <Button component={RouterLink} to="/record" color="inherit">
@@ -55,8 +55,7 @@ const Navbar: React.FC<NavbarProps> = ({ role = 'guest' }) => {
             </Button>
           </>
         );
-
-      case 'user':
+      case Role.Client:
         return (
           <>
             <Button component={RouterLink} to="/book" color="inherit">
@@ -67,14 +66,14 @@ const Navbar: React.FC<NavbarProps> = ({ role = 'guest' }) => {
             </Button>
           </>
         );
-
+      case Role.Guest:
       default:
         return (
           <>
             <Button component={RouterLink} to="/book" color="inherit">
               Book an Appointment
             </Button>
-            <Button component={RouterLink} to="/login" color="inherit">
+            <Button component={RouterLink} to="/auth/login" color="inherit">
               Log In / Sign Up
             </Button>
           </>
@@ -83,12 +82,11 @@ const Navbar: React.FC<NavbarProps> = ({ role = 'guest' }) => {
   };
 
   const showDropdown =
-    role === 'user' || role === 'provider' || role === 'admin';
+    role === Role.Client || role === Role.Provider || role === Role.Admin;
 
   return (
     <AppBar position="static" elevation={1}>
       <Toolbar>
-        {/* Logo */}
         <Box sx={{ flexGrow: 1 }}>
           <Typography
             variant="h6"
@@ -101,10 +99,8 @@ const Navbar: React.FC<NavbarProps> = ({ role = 'guest' }) => {
           </Typography>
         </Box>
 
-        {/* Menu items */}
         {renderMenuItems()}
 
-        {/* Dropdown menu */}
         {showDropdown && (
           <>
             <IconButton
@@ -132,7 +128,7 @@ const Navbar: React.FC<NavbarProps> = ({ role = 'guest' }) => {
               <MenuItem
                 onClick={handleClose}
                 component={RouterLink}
-                to="/logout"
+                to="/auth/logout"
               >
                 Exit
               </MenuItem>

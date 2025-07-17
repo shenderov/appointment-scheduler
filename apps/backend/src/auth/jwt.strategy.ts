@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import { Role } from '@shared/models/enums';
 
 export interface JwtPayload {
   sub: string;
   name: string;
   email: string;
-  role: string;
+  role: Role;
 }
 
 @Injectable()
@@ -15,7 +16,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: 'your_jwt_secret', // make sure this matches what you use when signing
+      secretOrKey: 'your_jwt_secret',
     });
   }
 

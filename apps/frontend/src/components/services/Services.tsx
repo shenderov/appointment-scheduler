@@ -1,5 +1,5 @@
 import { Grid, Typography, Box } from '@mui/material';
-import ServiceCard from './ServiceCard';
+import ServiceCard from '@components/services/ServiceCard';
 
 const services = [
   {
