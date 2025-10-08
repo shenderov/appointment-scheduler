@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import {
   Box,
   Button,
@@ -8,53 +8,79 @@ import {
   Container,
   Alert,
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import type { LoginDto as LoginRequest } from '@shared/models/dtos';
-import { useAuth } from '@context/AuthContext';
+import { useAuth } from '@auth/hooks/useAuth';
 import { Role } from '@shared/models/enums';
+import type { User } from '@auth/context/AuthContextBase';
+
+interface LoginResponse {
+  access_token: string;
+}
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const location = useLocation();
   const navigate = useNavigate();
   const { updateUser } = useAuth();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLFormElement>,
+  ): Promise<void> => {
     e.preventDefault();
     setError('');
 
     try {
       const data: LoginRequest = { email, password };
-      const res = await axios.post('http://localhost:3000/auth/login', data);
+      const res: AxiosResponse<LoginResponse> = await axios.post(
+        'http://localhost:3000/auth/login',
+        data,
+      );
 
-      const token = res.data?.access_token;
-      if (token) {
-        localStorage.setItem('token', token);
+      const token = res.data.access_token;
+      if (!token) {
+        setError('No token received');
+        return;
+      }
+      // Save token
+      localStorage.setItem('token', token);
 
-        // Fetch current user
-        const userRes = await axios.get('http://localhost:3000/users/me', {
+      // Fetch authenticated user
+      const userRes: AxiosResponse<User> = await axios.get(
+        'http://localhost:3000/users/me',
+        {
           headers: {
             Authorization: `Bearer ${token}`,
           },
+        },
+      );
+
+      const user = userRes.data;
+      updateUser(user);
+
+      const redirectTo = (location.state as { from?: string })?.from;
+      if (redirectTo) {
+        void navigate(redirectTo, {
+          replace: true,
+          state: { fromLogin: true },
         });
+        return;
+      }
 
-        updateUser(userRes.data);
-
-        // Redirect based on role
-        switch (userRes.data.role) {
-          case Role.Admin:
-          case Role.Provider:
-            navigate('/dashboard');
-            break;
-          case Role.Client:
-            navigate('/profile');
-            break;
-          default:
-            navigate('/');
-        }
-      } else {
-        setError('No token received');
+      switch (user.role) {
+        case Role.Admin:
+          void navigate('/admin');
+          break;
+        case Role.Provider:
+          void navigate('/provider');
+          break;
+        case Role.Client:
+          void navigate('/client');
+          break;
+        default:
+          void navigate('/');
       }
     } catch (err) {
       console.error('Login error:', err);
@@ -66,7 +92,7 @@ const LoginForm = () => {
     <Container maxWidth="xs">
       <Box
         component="form"
-        onSubmit={handleSubmit}
+        onSubmit={(e) => void handleSubmit(e)}
         sx={{
           mt: 8,
           display: 'flex',

@@ -4,12 +4,12 @@ import {
   Column,
   CreateDateColumn,
 } from 'typeorm';
-import { Role, CreatableRoles } from "@shared/models/enums";
+import { Role, CreatableRoles } from '@shared/models/enums';
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn('uuid')
-  id!: string;
+  @PrimaryGeneratedColumn()
+  id!: number;
 
   @Column()
   name!: string;

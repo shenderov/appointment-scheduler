@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Service } from '../entities/services.entity';
-import { CreateServiceDto } from '../dtos/create-services.dto';
-import { UpdateServiceDto } from '../dtos/update-services.dto';
-import { ServicePublicResponseDto } from '../dtos/service-public-response.dto';
+import { Service } from '@services/entities/services.entity';
+import { CreateServiceDto } from '@services/dtos/create-services.dto';
+import { UpdateServiceDto } from '@services/dtos/update-services.dto';
+import { ServicePublicResponseDto } from '@services/dtos/service-public-response.dto';
 import { plainToInstance } from 'class-transformer';
 import { JwtService } from '@nestjs/jwt';
 
@@ -37,7 +37,7 @@ export class ServicesService {
     );
   }
 
-  async findOne(id: string): Promise<Service> {
+  async findOne(id: number): Promise<Service> {
     const service = await this.serviceRepository.findOneBy({ id });
     if (!service) {
       throw new NotFoundException(`Service with id ${id} not found`);
@@ -45,13 +45,13 @@ export class ServicesService {
     return service;
   }
 
-  async update(id: string, dto: UpdateServiceDto): Promise<Service> {
+  async update(id: number, dto: UpdateServiceDto): Promise<Service> {
     const service = await this.findOne(id);
     Object.assign(service, dto);
     return await this.serviceRepository.save(service);
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: number): Promise<void> {
     const result = await this.serviceRepository.delete(id);
     if (result.affected === 0) {
       throw new NotFoundException(`Service with id ${id} not found`);

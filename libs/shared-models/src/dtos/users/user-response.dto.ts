@@ -1,7 +1,7 @@
-import { Role } from '@shared/models/enums'
+import { Role } from '@shared/models/enums';
 
 export class UserResponseDto {
-  id!: string;
+  id!: number;
   name!: string;
   email!: string;
   role!: Role;

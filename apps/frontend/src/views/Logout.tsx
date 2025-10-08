@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@context/AuthContext';
+import { useAuth } from '@auth/hooks/useAuth';
 import { Role } from '@shared/models/enums';
 
 const Logout = () => {
@@ -10,7 +10,7 @@ const Logout = () => {
   useEffect(() => {
     localStorage.removeItem('token');
     updateUser({ name: 'Guest', role: Role.Guest });
-    navigate('/');
+    void navigate('/');
   }, [updateUser, navigate]);
 
   return null;

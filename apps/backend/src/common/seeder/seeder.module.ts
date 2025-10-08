@@ -4,9 +4,19 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Service } from '@services/entities/services.entity';
 import { Provider } from '@providers/entities/providers.entity';
 import { User } from '@users/entities/user.entity';
+import { ClinicHours } from '@clinic/entities/clinic-hours.entity';
+import { ProviderHours } from '@providers/entities/provider-hours.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Service, User, Provider])],
+  imports: [
+    TypeOrmModule.forFeature([
+      Service,
+      User,
+      Provider,
+      ProviderHours,
+      ClinicHours,
+    ]),
+  ],
   providers: [SeederService],
   exports: [SeederService],
 })

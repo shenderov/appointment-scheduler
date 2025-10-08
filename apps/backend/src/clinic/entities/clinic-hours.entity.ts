@@ -1,0 +1,21 @@
+import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import type { Weekday } from '@shared/models/constants';
+
+@Entity('clinic_hours')
+@Unique(['weekday'])
+export class ClinicHours {
+  @PrimaryGeneratedColumn()
+  id!: number;
+
+  @Column({ type: 'varchar' })
+  weekday!: Weekday;
+
+  @Column({ type: 'time' })
+  startTime!: string;
+
+  @Column({ type: 'time' })
+  endTime!: string;
+
+  @Column({ default: true })
+  isOpen!: boolean;
+}

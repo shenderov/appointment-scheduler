@@ -6,7 +6,6 @@ import {
   Delete,
   Param,
   Body,
-  ParseUUIDPipe,
   NotFoundException,
   UseGuards,
 } from '@nestjs/common';
@@ -24,9 +23,7 @@ export class ServicesController {
 
   @UseGuards(AuthGuard('jwt'))
   @Get(':id')
-  async findOne(
-    @Param('id', new ParseUUIDPipe()) id: string,
-  ): Promise<Service> {
+  async findOne(@Param('id') id: number): Promise<Service> {
     const service = await this.servicesService.findOne(id);
     if (!service) {
       throw new NotFoundException('Service not found');
@@ -43,7 +40,7 @@ export class ServicesController {
   @UseGuards(AuthGuard('jwt'))
   @Put(':id')
   async update(
-    @Param('id', new ParseUUIDPipe()) id: string,
+    @Param('id') id: number,
     @Body() dto: UpdateServiceDto,
   ): Promise<Service> {
     return await this.servicesService.update(id, dto);
@@ -51,7 +48,7 @@ export class ServicesController {
 
   @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
-  async remove(@Param('id', new ParseUUIDPipe()) id: string): Promise<void> {
+  async remove(@Param('id') id: number): Promise<void> {
     await this.servicesService.delete(id);
   }
 

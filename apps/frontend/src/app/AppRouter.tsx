@@ -1,0 +1,151 @@
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from '@views/Home';
+import Search from '@views/booking/Search';
+import AppointmentBookingStepper from '@views/booking/stepper/AppointmentBookingStepper';
+import Login from '@views/Login';
+import Logout from '@views/Logout';
+import AccountSettings from '@views/AccountSettings';
+import RequireAuth from 'src/auth/guards/RequireAuth';
+import DefaultLayout from '@layout/DefaultLayout';
+import DashboardLayout from '@layout/DashboardLayout';
+
+import AdminDashboard from '@views/admin/dashboard/AdminDashboard';
+import AdminAppointments from '@views/admin/dashboard/AdminAppointments';
+import AdminClients from '@views/admin/dashboard/AdminClients';
+import AdminProviders from '@views/admin/dashboard/AdminProviders';
+import AdminUsers from '@views/admin/dashboard/AdminUsers';
+import ClinicSettings from '@views/admin/dashboard/ClinicSettings';
+import GeneralSettings from '@views/admin/dashboard/GeneralSettings';
+
+import ProviderDashboard from '@views/provider/dashboard/ProviderDashboard';
+import ProviderAppointments from '@views/provider/dashboard/ProviderAppointments';
+import ProviderClients from '@views/provider/dashboard/ProviderClients';
+import ProviderSettings from '@views/provider/dashboard/ProviderSettings';
+import RecordAppointment from '@views/provider/RecordAppointment';
+
+import ClientDashboard from '@views/client/dashboard/ClientDashboard';
+import ClientAppointments from '@views/client/dashboard/ClientAppointments';
+import ClientInsuranceDetails from '@views/client/dashboard/ClientInsuranceDetails';
+import ClientContactDetails from '@views/client/dashboard/ClientContactDetails';
+
+import Unauthorized from '@views/shared/Unauthorized';
+import NotFound from '@views/shared/NotFound';
+import { Role } from '@shared/models/enums';
+
+const adminSidebarItems = [
+  { text: 'Dashboard', to: '/admin' },
+  { text: 'Appointments', to: '/admin/appointments' },
+  { text: 'Providers', to: '/admin/providers' },
+  { text: 'Clients', to: '/admin/clients' },
+  { text: 'Users', to: '/admin/users' },
+  { text: 'Clinic', to: '/admin/clinic' },
+  { text: 'Settings', to: '/admin/settings' },
+];
+
+const providerSidebarItems = [
+  { text: 'Dashboard', to: '/provider' },
+  { text: 'Appointments', to: '/provider/appointments' },
+  { text: 'Clients', to: '/provider/clients' },
+  { text: 'Settings', to: '/provider/settings' },
+];
+
+const clientSidebarItems = [
+  { text: 'Dashboard', to: '/client' },
+  { text: 'Appointments', to: '/client/appointments' },
+  { text: 'Contact Details', to: '/client/contact' },
+  { text: 'Insurance Information', to: '/client/insurance' },
+];
+
+const AppRouter = () => (
+  <Router>
+    <div className="flex flex-col min-h-screen">
+      <Routes>
+        <Route element={<DefaultLayout />}>
+          {/* Public */}
+          <Route path="/" element={<Home />} />
+          <Route path="/search" element={<Search />} />
+          <Route path="/booking" element={<AppointmentBookingStepper />} />
+          <Route path="/auth/login" element={<Login />} />
+
+          {/* Authenticated routes that should keep DefaultLayout */}
+          <Route element={<RequireAuth />}>
+            <Route path="/auth/logout" element={<Logout />} />
+            <Route path="/account" element={<AccountSettings />} />
+
+            {/* Admin + Provider only. Uses DefaultLayout */}
+            <Route
+              element={
+                <RequireAuth allowedRoles={[Role.Admin, Role.Provider]} />
+              }
+            >
+              <Route
+                path="/appointments/record"
+                element={<RecordAppointment />}
+              />
+            </Route>
+          </Route>
+
+          {/* Shared fallback under DefaultLayout */}
+          <Route path="/unauthorized" element={<Unauthorized />} />
+          <Route path="*" element={<NotFound />} />
+        </Route>
+
+        <Route element={<RequireAuth allowedRoles={[Role.Admin]} />}>
+          <Route
+            path="/admin"
+            element={
+              <DashboardLayout
+                sidebarItems={adminSidebarItems}
+                sidebarTitle="Admin Portal"
+              />
+            }
+          >
+            <Route index element={<AdminDashboard />} />
+            <Route path="appointments" element={<AdminAppointments />} />
+            <Route path="providers" element={<AdminProviders />} />
+            <Route path="clients" element={<AdminClients />} />
+            <Route path="users" element={<AdminUsers />} />
+            <Route path="clinic" element={<ClinicSettings />} />
+            <Route path="settings" element={<GeneralSettings />} />
+          </Route>
+        </Route>
+
+        <Route element={<RequireAuth allowedRoles={[Role.Provider]} />}>
+          <Route
+            path="/provider"
+            element={
+              <DashboardLayout
+                sidebarItems={providerSidebarItems}
+                sidebarTitle="Provider Portal"
+              />
+            }
+          >
+            <Route index element={<ProviderDashboard />} />
+            <Route path="appointments" element={<ProviderAppointments />} />
+            <Route path="clients" element={<ProviderClients />} />
+            <Route path="settings" element={<ProviderSettings />} />
+          </Route>
+        </Route>
+
+        <Route element={<RequireAuth allowedRoles={[Role.Client]} />}>
+          <Route
+            path="/client"
+            element={
+              <DashboardLayout
+                sidebarItems={clientSidebarItems}
+                sidebarTitle="My Profile"
+              />
+            }
+          >
+            <Route index element={<ClientDashboard />} />
+            <Route path="appointments" element={<ClientAppointments />} />
+            <Route path="contact" element={<ClientContactDetails />} />
+            <Route path="insurance" element={<ClientInsuranceDetails />} />
+          </Route>
+        </Route>
+      </Routes>
+    </div>
+  </Router>
+);
+
+export default AppRouter;

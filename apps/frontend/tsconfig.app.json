@@ -7,12 +7,13 @@
     "paths": {
       "@api/*": ["src/api/*"],
       "@components/*": ["src/components/*"],
-      "@context/*": ["src/context/*"],
+      "@context/*": ["src/auth/context/*"],
       "@layout/*": ["src/layout/*"],
       "@assets/*": ["src/assets/*"],
       "@router/*": ["src/router/*"],
       "@utils/*": ["src/utils/*"],
       "@views/*": ["src/views/*"],
+      "@auth/*": ["src/auth/*"],
       "@shared/models/*": ["../../libs/shared-models/*"]
     }
   },

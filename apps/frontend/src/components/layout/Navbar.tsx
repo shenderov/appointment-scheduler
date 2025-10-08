@@ -33,13 +33,24 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
       case Role.Admin:
         return (
           <>
-            <Button component={RouterLink} to="/dashboard" color="inherit">
+            <Button component={RouterLink} to="/admin" color="inherit">
               Dashboard
             </Button>
-            <Button component={RouterLink} to="/users" color="inherit">
-              Users
+            <Button
+              component={RouterLink}
+              to="/admin/appointments"
+              color="inherit"
+            >
+              Appointments
             </Button>
-            <Button component={RouterLink} to="/providers" color="inherit">
+            <Button component={RouterLink} to="/admin/clients" color="inherit">
+              Clients
+            </Button>
+            <Button
+              component={RouterLink}
+              to="/admin/providers"
+              color="inherit"
+            >
               Providers
             </Button>
           </>
@@ -47,10 +58,21 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
       case Role.Provider:
         return (
           <>
-            <Button component={RouterLink} to="/record" color="inherit">
+            <Button
+              component={RouterLink}
+              to="/appointments/record"
+              color="inherit"
+            >
               Record an Appointment
             </Button>
-            <Button component={RouterLink} to="/dashboard" color="inherit">
+            <Button
+              component={RouterLink}
+              to="/provider/appointments"
+              color="inherit"
+            >
+              Appointments
+            </Button>
+            <Button component={RouterLink} to="/provider" color="inherit">
               Dashboard
             </Button>
           </>
@@ -58,10 +80,10 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
       case Role.Client:
         return (
           <>
-            <Button component={RouterLink} to="/book" color="inherit">
+            <Button component={RouterLink} to="/search" color="inherit">
               Book an Appointment
             </Button>
-            <Button component={RouterLink} to="/profile" color="inherit">
+            <Button component={RouterLink} to="/client" color="inherit">
               My Profile
             </Button>
           </>
@@ -70,7 +92,7 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
       default:
         return (
           <>
-            <Button component={RouterLink} to="/book" color="inherit">
+            <Button component={RouterLink} to="/search" color="inherit">
               Book an Appointment
             </Button>
             <Button component={RouterLink} to="/auth/login" color="inherit">

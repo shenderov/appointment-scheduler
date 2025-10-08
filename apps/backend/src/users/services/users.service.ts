@@ -5,7 +5,6 @@ import { User } from '@users/entities/user.entity';
 import { CreateUserDto } from '@shared/models/dtos';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { UserResponseDto } from '@shared/models/dtos';
 
 @Injectable()
 export class UsersService {
@@ -24,13 +23,8 @@ export class UsersService {
     return this.userRepository.save(user);
   }
 
-  async getUserById(userId: string): Promise<User | null> {
+  async getUserById(userId: number): Promise<User | null> {
     const user = this.userRepository.findOneBy({ id: userId });
-
-    // if
-    //   ...createUserDto,
-    //   passwordHash,
-    // });
     return user;
   }
 

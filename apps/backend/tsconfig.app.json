@@ -7,6 +7,7 @@
     "paths": {
       "@appointments/*": ["apps/backend/src/appointments/*"],
       "@auth/*": ["apps/backend/src/auth/*"],
+      "@clinic/*": ["apps/backend/src/clinic/*"],
       "@common/*": ["apps/backend/src/common/*"],
       "@providers/*": ["apps/backend/src/providers/*"],
       "@services/*": ["apps/backend/src/services/*"],

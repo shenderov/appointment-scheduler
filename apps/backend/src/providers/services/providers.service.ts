@@ -1,12 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Provider } from '../entities/providers.entity';
-import { CreateProviderDto } from '../dtos/create-provider.dto';
+import { Provider } from '@providers/entities/providers.entity';
+import { CreateProviderDto } from '@providers/dtos/create-provider.dto';
 import { JwtService } from '@nestjs/jwt';
-import { ProviderPublicResponseDto } from '../dtos/provider-public-response.dto';
+import { ProviderPublicResponseDto } from '@providers/dtos/provider-public-response.dto';
 import { plainToInstance } from 'class-transformer';
-import { ProviderResponseDto } from '../dtos/provider-response.dto';
+import { ProviderResponseDto } from '@providers/dtos/provider-response.dto';
+import { mapToPublicProviderDto } from '@providers/mappers/mapToPublicProviderDto';
 
 @Injectable()
 export class ProvidersService {
@@ -72,5 +73,16 @@ export class ProvidersService {
         user: provider.user,
       }),
     );
+  }
+
+  async getPublicProviderById(id: number): Promise<ProviderPublicResponseDto> {
+    const provider = await this.providerRepository.findOne({
+      where: { id },
+      relations: ['services', 'user'],
+    });
+
+    if (!provider) throw new NotFoundException('Provider not found');
+
+    return mapToPublicProviderDto(provider); // create this mapper if not yet available
   }
 }

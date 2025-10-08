@@ -1,5 +1,5 @@
 export class ProviderPublicResponseDto {
-  id!: string;
+  id!: number;
   profileImageUrl?: string;
   specialty!: string;
   title!: string;
@@ -8,9 +8,9 @@ export class ProviderPublicResponseDto {
     licenseName: string;
     licenseNumber: string;
   };
-  serviceIds!: string[];
+  serviceIds!: number[];
   user!: {
-    id: string;
+    id: number;
     name: string;
   };
 }

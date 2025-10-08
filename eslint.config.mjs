@@ -23,20 +23,13 @@ export default [
   js.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
 
-  // Frontend: React + Vite + TS
   {
-    files: ['frontend/**/*.{ts,tsx}'],
+    files: ['apps/frontend/**/*.{ts,tsx}'],
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {
-        project: ['./frontend/tsconfig.app.json'],
+        project: ['./apps/frontend/tsconfig.app.json'],
         tsconfigRootDir: __dirname,
-      },
-      sourceType: 'module',
-      globals: {
-        ...globals.browser,
-        ...globals.node,
-        ...globals.jest,
       },
     },
     plugins: {
@@ -46,40 +39,35 @@ export default [
       prettier: prettierPlugin,
     },
     rules: {
-      // TypeScript
-      '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-floating-promises': 'warn',
-      '@typescript-eslint/no-unsafe-argument': 'warn',
-      '@typescript-eslint/no-unsafe-call': 'error',
-
-      // React
-      'react/jsx-uses-react': 'off',
-      'react/react-in-jsx-scope': 'off',
-      ...(reactHooks.configs?.recommended?.rules ?? {}),
+      ...(reactHooks.configs.recommended.rules ?? {}),
       'react-refresh/only-export-components': [
         'warn',
         { allowConstantExport: true },
       ],
-
-      // Prettier
       ...prettierPlugin.configs.recommended.rules,
     },
     settings: {
-      react: {
-        version: 'detect',
+      // 👇 THIS IS THE FIX
+      'import/resolver': {
+        typescript: {
+          alwaysTryTypes: true,
+          project: ['./apps/frontend/tsconfig.app.json'],
+        },
       },
     },
   },
 
-  // Backend: NestJS + TS
   {
-    files: ['backend/**/*.{ts,tsx}'],
+    files: [
+      'apps/backend/src/**/*.{ts,tsx}',
+      'apps/backend/test/**/*.{ts,tsx}',
+    ],
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {
         project: [
-          './backend/tsconfig.app.json',
-          './backend/tsconfig.test.json',
+          './apps/backend/tsconfig.app.json',
+          './apps/backend/tsconfig.test.json',
         ],
         tsconfigRootDir: __dirname,
       },

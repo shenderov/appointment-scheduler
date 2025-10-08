@@ -6,6 +6,9 @@ import { User } from '@users/entities/user.entity';
 import { Provider, Specialty } from '@providers/entities/providers.entity';
 import * as bcrypt from 'bcrypt';
 import { Role } from '@shared/models/enums';
+import { ClinicHours } from '@clinic/entities/clinic-hours.entity';
+import { Weekdays } from '@shared/models/constants';
+import { ProviderHours } from '@providers/entities/provider-hours.entity';
 
 @Injectable()
 export class SeederService implements OnModuleInit {
@@ -18,6 +21,12 @@ export class SeederService implements OnModuleInit {
 
     @InjectRepository(Provider)
     private readonly providerRepo: Repository<Provider>,
+
+    @InjectRepository(ClinicHours)
+    private readonly clinicHourRepo: Repository<ClinicHours>,
+
+    @InjectRepository(ProviderHours)
+    private readonly providerHoursRepo: Repository<ProviderHours>,
   ) {}
 
   async onModuleInit() {
@@ -26,6 +35,7 @@ export class SeederService implements OnModuleInit {
     await this.seedProviders();
     await this.seedAdmins();
     await this.seedClients();
+    await this.seedClinicHours();
   }
 
   private async seedServices() {
@@ -162,6 +172,16 @@ export class SeederService implements OnModuleInit {
         'Foot Care Diabetic Foot Exam',
       ]);
 
+      const dayOffOptions: [string, string][] = [
+        ['Mon', 'Tue'],
+        ['Tue', 'Wed'],
+        ['Wed', 'Thu'],
+        ['Thu', 'Fri'],
+        ['Fri', 'Sat'],
+        ['Sat', 'Sun'],
+        ['Sun', 'Mon'],
+      ];
+
       const seedData: {
         name: string;
         email: string;
@@ -170,7 +190,7 @@ export class SeederService implements OnModuleInit {
         title: string;
         licenseName: string;
         licenseNumber: string;
-        serviceIds: string[];
+        serviceIds: number[];
         bio: string;
       }[] = [
         {
@@ -333,7 +353,7 @@ export class SeederService implements OnModuleInit {
           role: Role.Provider,
         });
 
-        await this.providerRepo.save({
+        const provider = await this.providerRepo.save({
           user: { id: user.id },
           profileImageUrl: '',
           specialty: data.specialty,
@@ -344,6 +364,45 @@ export class SeederService implements OnModuleInit {
           isActive: true,
           services: data.serviceIds.map((id) => ({ id })),
         });
+
+        // Pick 2 consecutive days off
+        const [dayOff1, dayOff2] =
+          dayOffOptions[Math.floor(Math.random() * dayOffOptions.length)];
+
+        // Choose weekday availability schedule
+        const isMorning = Math.random() < 0.5;
+        const weekdayStart = isMorning ? '09:00' : '12:00';
+        const weekdayEnd = isMorning ? '17:00' : '20:00';
+
+        // Create hours
+        const weeklyHours = Weekdays.map((day) => {
+          if (day === dayOff1 || day === dayOff2) {
+            return this.providerHoursRepo.create({
+              provider,
+              providerId: provider.id,
+              weekday: day,
+              startTime: '00:00',
+              endTime: '00:00',
+              isAvailable: false,
+            });
+          }
+
+          const [startTime, endTime] =
+            day === Weekdays[5] || day === Weekdays[6]
+              ? ['10:00', '18:00']
+              : [weekdayStart, weekdayEnd];
+
+          return this.providerHoursRepo.create({
+            provider,
+            providerId: provider.id,
+            weekday: day,
+            startTime,
+            endTime,
+            isAvailable: true,
+          });
+        });
+
+        await this.providerHoursRepo.save(weeklyHours);
       }
 
       console.log('✅ Seeded 20+ providers and linked users');
@@ -396,5 +455,57 @@ export class SeederService implements OnModuleInit {
     }));
     await this.userRepo.save(clients);
     console.log('✅ Seeded 20 clients');
+  }
+
+  private async seedClinicHours() {
+    const count = await this.clinicHourRepo.count();
+    console.log('Clinic hours in DB: ', count);
+    if (count === 0) {
+      await this.clinicHourRepo.save([
+        {
+          weekday: Weekdays[0],
+          startTime: '09:00',
+          endTime: '20:00',
+          isOpen: true,
+        },
+        {
+          weekday: Weekdays[1],
+          startTime: '09:00',
+          endTime: '20:00',
+          isOpen: true,
+        },
+        {
+          weekday: Weekdays[2],
+          startTime: '09:00',
+          endTime: '20:00',
+          isOpen: true,
+        },
+        {
+          weekday: Weekdays[3],
+          startTime: '09:00',
+          endTime: '20:00',
+          isOpen: true,
+        },
+        {
+          weekday: Weekdays[4],
+          startTime: '09:00',
+          endTime: '20:00',
+          isOpen: true,
+        },
+        {
+          weekday: Weekdays[5],
+          startTime: '10:00',
+          endTime: '18:00',
+          isOpen: true,
+        },
+        {
+          weekday: Weekdays[6],
+          startTime: '10:00',
+          endTime: '18:00',
+          isOpen: true,
+        },
+      ]);
+      console.log('✅ Preloaded clinic hours into database.');
+    }
   }
 }

@@ -1,19 +1,17 @@
-import type { ReactNode } from 'react';
+import { Outlet } from 'react-router-dom';
 import Navbar from '@components/layout/Navbar';
 import Footer from '@components/layout/Footer';
-import { useAuth } from '@context/AuthContext';
+import { useAuth } from '@auth/hooks/useAuth';
 
-interface DefaultLayoutProps {
-  children: ReactNode;
-}
-
-const DefaultLayout = ({ children }: DefaultLayoutProps) => {
+const DefaultLayout = () => {
   const { user } = useAuth();
 
   return (
     <>
-      <Navbar role={user.role} />
-      <main>{children}</main>
+      <Navbar role={user?.role} />
+      <main>
+        <Outlet />
+      </main>
       <Footer />
     </>
   );

@@ -1,14 +1,17 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UsersModule } from './users/users.module';
-import { ServicesModule } from './services/services.module';
-import { ProvidersModule } from './providers/providers.module';
-import { AuthModule } from './auth/auth.module';
-import { SeederModule } from './common/seeder/seeder.module';
+import { UsersModule } from '@users/users.module';
+import { ServicesModule } from '@services/services.module';
+import { ProvidersModule } from '@providers/providers.module';
+import { AuthModule } from '@auth/auth.module';
+import { SeederModule } from '@common/seeder/seeder.module';
+import { ClinicModule } from '@clinic/clinic.module';
+import { AppointmentsModule } from '@appointments/appointments.module';
 
 @Module({
   imports: [
     AuthModule,
+    AppointmentsModule,
     UsersModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -19,10 +22,12 @@ import { SeederModule } from './common/seeder/seeder.module';
       database: 'nest',
       entities: [__dirname + '/**/*.entity.{ts,js}'],
       synchronize: true, // ⚠️ dev only
+      dropSchema: true,
     }),
     ProvidersModule,
     ServicesModule,
     SeederModule,
+    ClinicModule,
   ],
   controllers: [],
   providers: [],

@@ -7,10 +7,14 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToOne,
+  OneToMany,
   JoinColumn,
 } from 'typeorm';
-import { Service } from '../../services/entities/services.entity';
-import { User } from '../../users/entities/user.entity';
+import { Service } from '@services/entities/services.entity';
+import { User } from '@users/entities/user.entity';
+import { ProviderHours } from '@providers/entities/provider-hours.entity';
+import { ProviderHoursOverride } from '@providers/entities/provider-hours-override.entity';
+import { Appointments } from '@appointments/entities/appointments.entity';
 
 export enum Specialty {
   MASSAGE = 'Massage',
@@ -24,8 +28,8 @@ export enum Specialty {
 
 @Entity('providers')
 export class Provider {
-  @PrimaryGeneratedColumn('uuid')
-  id!: string;
+  @PrimaryGeneratedColumn()
+  id!: number;
 
   @Column({ nullable: true })
   profileImageUrl?: string;
@@ -61,4 +65,15 @@ export class Provider {
   @OneToOne(() => User, { eager: true })
   @JoinColumn()
   user!: User;
+
+  @OneToMany(() => ProviderHours, (hours) => hours.provider, { cascade: true })
+  providerHours!: ProviderHours[];
+
+  @OneToMany(() => ProviderHoursOverride, (override) => override.provider, {
+    cascade: true,
+  })
+  providerOverrides!: ProviderHoursOverride[];
+
+  @OneToMany(() => Appointments, (appointment) => appointment.provider)
+  appointments!: Appointments[];
 }

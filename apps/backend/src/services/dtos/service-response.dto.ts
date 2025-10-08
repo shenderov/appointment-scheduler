@@ -1,5 +1,5 @@
 export class ServiceResponseDto {
-  id!: string;
+  id!: number;
   name!: string;
   durationMin!: number;
   breakMin!: number;
