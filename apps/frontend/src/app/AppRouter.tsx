@@ -5,7 +5,7 @@ import AppointmentBookingStepper from '@views/booking/stepper/AppointmentBooking
 import Login from '@views/Login';
 import Logout from '@views/Logout';
 import AccountSettings from '@views/AccountSettings';
-import RequireAuth from 'src/auth/guards/RequireAuth';
+import RequireAuth from '@auth/guards/RequireAuth';
 import DefaultLayout from '@layout/DefaultLayout';
 import DashboardLayout from '@layout/DashboardLayout';
 
@@ -30,7 +30,7 @@ import ClientContactDetails from '@views/client/dashboard/ClientContactDetails';
 
 import Unauthorized from '@views/shared/Unauthorized';
 import NotFound from '@views/shared/NotFound';
-import { Role } from '@shared/models/enums';
+import { Role } from '@shared-models/enums/auth/role.enum';
 
 const adminSidebarItems = [
   { text: 'Dashboard', to: '/admin' },
@@ -75,7 +75,7 @@ const AppRouter = () => (
             {/* Admin + Provider only. Uses DefaultLayout */}
             <Route
               element={
-                <RequireAuth allowedRoles={[Role.Admin, Role.Provider]} />
+                <RequireAuth allowedRoles={[Role.ADMIN, Role.PROVIDER]} />
               }
             >
               <Route
@@ -90,7 +90,7 @@ const AppRouter = () => (
           <Route path="*" element={<NotFound />} />
         </Route>
 
-        <Route element={<RequireAuth allowedRoles={[Role.Admin]} />}>
+        <Route element={<RequireAuth allowedRoles={[Role.ADMIN]} />}>
           <Route
             path="/admin"
             element={
@@ -110,7 +110,7 @@ const AppRouter = () => (
           </Route>
         </Route>
 
-        <Route element={<RequireAuth allowedRoles={[Role.Provider]} />}>
+        <Route element={<RequireAuth allowedRoles={[Role.PROVIDER]} />}>
           <Route
             path="/provider"
             element={
@@ -127,7 +127,7 @@ const AppRouter = () => (
           </Route>
         </Route>
 
-        <Route element={<RequireAuth allowedRoles={[Role.Client]} />}>
+        <Route element={<RequireAuth allowedRoles={[Role.CLIENT]} />}>
           <Route
             path="/client"
             element={

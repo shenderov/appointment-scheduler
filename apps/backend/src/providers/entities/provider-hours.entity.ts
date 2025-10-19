@@ -7,7 +7,7 @@ import {
   Unique,
 } from 'typeorm';
 import { Provider } from '@providers/entities/providers.entity';
-import { Weekday } from '@shared/models/constants';
+import { Weekday } from '@shared-models/constants/common/weekdays';
 
 @Entity('provider_hours')
 @Unique(['providerId', 'weekday'])

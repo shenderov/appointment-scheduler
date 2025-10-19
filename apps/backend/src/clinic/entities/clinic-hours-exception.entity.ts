@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
-import { ClinicHoursExceptionReason } from '@shared/models/enums';
+import { ClinicHoursExceptionReason } from '@shared-models/enums/clinic/clinic-hours-exception-reason.enum';
 
 @Entity('clinic_hours_exception')
 export class ClinicHoursException {

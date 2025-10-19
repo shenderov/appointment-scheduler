@@ -4,7 +4,7 @@ import {
   Column,
   CreateDateColumn,
 } from 'typeorm';
-import { Role, CreatableRoles } from '@shared/models/enums';
+import { Role } from '@shared-models/enums/auth/role.enum';
 
 @Entity()
 export class User {
@@ -22,8 +22,8 @@ export class User {
 
   @Column({
     type: 'enum',
-    enum: CreatableRoles,
-    default: 'client',
+    enum: Role,
+    default: Role.CLIENT,
   })
   role!: Role;
 

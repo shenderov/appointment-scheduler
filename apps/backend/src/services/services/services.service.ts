@@ -2,9 +2,9 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Service } from '@services/entities/services.entity';
-import { CreateServiceDto } from '@services/dtos/create-services.dto';
-import { UpdateServiceDto } from '@services/dtos/update-services.dto';
-import { ServicePublicResponseDto } from '@services/dtos/service-public-response.dto';
+import { CreateServiceDto } from '@shared-models/dtos/services/create-services.dto';
+import { UpdateServiceDto } from '@shared-models/dtos/services/update-services.dto';
+import { ServicePublicResponseDto } from '@shared-models/dtos/services/service-public-response.dto';
 import { plainToInstance } from 'class-transformer';
 import { JwtService } from '@nestjs/jwt';
 

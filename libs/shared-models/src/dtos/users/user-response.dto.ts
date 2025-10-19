@@ -1,4 +1,4 @@
-import { Role } from '@shared/models/enums';
+import { Role } from '@shared-models/enums/auth/role.enum';
 
 export class UserResponseDto {
   id!: number;

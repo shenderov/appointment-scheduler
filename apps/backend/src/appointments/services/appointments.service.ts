@@ -5,21 +5,22 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Appointments } from '@appointments/entities/appointments.entity';
-import { CreateAppointmentDto } from '@appointments/dtos/create-appointment.dto';
-import { UpdateAppointmentStatusDto } from '@appointments/dtos/update-status.dto';
+import { Appointment } from '@appointments/entities/appointment.entity';
+import { CreateAppointmentDto } from '@shared-models/dtos/appointments/create-appointment.dto';
+import { UpdateAppointmentStatusDto } from '@shared-models/dtos/appointments/update-appointment-status.dto';
 import { Provider } from '@providers/entities/providers.entity';
 import { Service } from '@services/entities/services.entity';
 import { User } from '@users/entities/user.entity';
+import { AppointmentStatus } from '@shared-models/enums/appointments/status.enum';
 
 @Injectable()
 export class AppointmentsService {
   constructor(
-    @InjectRepository(Appointments)
-    private readonly appointmentRepo: Repository<Appointments>,
+    @InjectRepository(Appointment)
+    private readonly appointmentRepo: Repository<Appointment>,
   ) {}
 
-  async create(data: CreateAppointmentDto): Promise<Appointments> {
+  async create(data: CreateAppointmentDto): Promise<Appointment> {
     if (!data.acknowledgment) {
       throw new BadRequestException(
         'Acknowledgment of terms and conditions required',
@@ -32,7 +33,7 @@ export class AppointmentsService {
       user: { id: data.userId } as User,
       startTime: new Date(data.startTime),
       comments: data.comments,
-      status: data.status ?? 'scheduled',
+      status: AppointmentStatus.PENDING,
     });
 
     try {
@@ -50,11 +51,11 @@ export class AppointmentsService {
     }
   }
 
-  findAll(): Promise<Appointments[]> {
+  findAll(): Promise<Appointment[]> {
     return this.appointmentRepo.find();
   }
 
-  async findOne(id: number): Promise<Appointments> {
+  async findOne(id: number): Promise<Appointment> {
     const appointment = await this.appointmentRepo.findOne({
       where: { id },
     });
@@ -66,7 +67,7 @@ export class AppointmentsService {
     return appointment;
   }
 
-  async findAllByClientId(userId: number): Promise<Appointments[]> {
+  async findAllByClientId(userId: number): Promise<Appointment[]> {
     return this.appointmentRepo.find({
       where: { user: { id: userId } },
     });
@@ -75,7 +76,7 @@ export class AppointmentsService {
   async updateStatus(
     id: number,
     dto: UpdateAppointmentStatusDto,
-  ): Promise<Appointments> {
+  ): Promise<Appointment> {
     const appointment = await this.findOne(id);
     appointment.status = dto.status;
     return this.appointmentRepo.save(appointment);

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Stepper, Step, StepLabel, Box } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@auth/hooks/useAuth';
-import { Role } from '@shared/models/enums';
+import { Role } from '@shared-models/enums/auth/role.enum';
 import axios from 'axios';
 import dayjs from 'dayjs';
 
@@ -64,7 +64,7 @@ const AppointmentBookingStepper = () => {
   const [acknowledged, setAcknowledged] = useState<boolean>(false);
   const [comments, setComments] = useState<string>('');
   const { user, loading } = useAuth();
-  const isLoggedIn = user.role !== Role.Guest;
+  const isLoggedIn = user.role !== Role.GUEST;
   const navigate = useNavigate();
   const location = useLocation();
   const state = location.state as SavedStepperState | undefined;
@@ -85,7 +85,7 @@ const AppointmentBookingStepper = () => {
     if (!providerId) return;
 
     void axios
-      .get<Provider>(`http://localhost:3000/provider/public/${providerId}`)
+      .get<Provider>(`http://localhost:3000/providers/public/${providerId}`)
       .then((res) => setProvider(res.data))
       .catch((err) => console.error('Failed to fetch provider:', err));
   }, [state]);
@@ -94,7 +94,7 @@ const AppointmentBookingStepper = () => {
     if (!provider?.serviceIds?.length) return;
 
     void axios
-      .get<Service[]>('http://localhost:3000/service/public/services')
+      .get<Service[]>('http://localhost:3000/services/public/services')
       .then((res) => {
         const filtered = res.data.filter((s: Service) =>
           provider.serviceIds.includes(s.id),
@@ -106,7 +106,7 @@ const AppointmentBookingStepper = () => {
 
   //Continue stepper after login
   useEffect(() => {
-    if (!loading && user.role !== Role.Guest && state?.fromLogin) {
+    if (!loading && user.role !== Role.GUEST && state?.fromLogin) {
       const saved = sessionStorage.getItem(STORAGE_KEY);
       const parsed = safeParseJSON<SavedStepperState>(saved);
       if (parsed) {
@@ -130,7 +130,7 @@ const AppointmentBookingStepper = () => {
     if (!service?.id || !provider?.id) return;
     try {
       const res = await axios.get<string[]>(
-        'http://localhost:3000/availability/slots',
+        'http://localhost:3000/availability/public/slots',
         {
           params: {
             providerId: provider.id,
@@ -199,15 +199,30 @@ const AppointmentBookingStepper = () => {
         alert('Invalid date or time selected. Please try again.');
         return;
       }
+      const token = localStorage.getItem('token');
 
-      await axios.post('http://localhost:3000/appointments', {
-        providerId: provider.id,
-        serviceId: service.id,
-        userId: user.userId,
-        startTime: start.toISOString(),
-        acknowledgment: acknowledged,
-        comments: comments,
-      });
+      if (!token) {
+        console.error('Missing authentication token');
+        return;
+      }
+
+      await axios.post(
+        'http://localhost:3000/appointments',
+        {
+          providerId: provider.id,
+          serviceId: service.id,
+          userId: user.userId,
+          startTime: start.toISOString(),
+          acknowledgment: acknowledged,
+          comments: comments,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: false,
+        },
+      );
 
       handleNext();
     } catch (err) {

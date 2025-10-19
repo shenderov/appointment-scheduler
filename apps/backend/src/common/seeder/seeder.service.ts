@@ -3,12 +3,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Service } from '@services/entities/services.entity';
 import { User } from '@users/entities/user.entity';
-import { Provider, Specialty } from '@providers/entities/providers.entity';
+import { Provider } from '@providers/entities/providers.entity';
 import * as bcrypt from 'bcrypt';
-import { Role } from '@shared/models/enums';
+import { Role } from '@shared-models/enums/auth/role.enum';
 import { ClinicHours } from '@clinic/entities/clinic-hours.entity';
-import { Weekdays } from '@shared/models/constants';
+import { Weekdays } from '@shared-models/constants/common/weekdays';
 import { ProviderHours } from '@providers/entities/provider-hours.entity';
+import { ProviderSpecialty } from '@shared-models/enums/providers/provider-specialty.enum';
 
 @Injectable()
 export class SeederService implements OnModuleInit {
@@ -186,7 +187,7 @@ export class SeederService implements OnModuleInit {
         name: string;
         email: string;
         password: string;
-        specialty: Specialty;
+        specialty: ProviderSpecialty;
         title: string;
         licenseName: string;
         licenseNumber: string;
@@ -197,7 +198,7 @@ export class SeederService implements OnModuleInit {
           name: 'Alice Brown',
           email: 'alice.massage@example.com',
           password: 'pass123',
-          specialty: Specialty.MASSAGE,
+          specialty: ProviderSpecialty.MASSAGE,
           title: 'Massage Therapist',
           licenseName: 'Massage Board Manitoba',
           licenseNumber: 'MB1001',
@@ -208,7 +209,7 @@ export class SeederService implements OnModuleInit {
           name: 'Bob Martin',
           email: 'bob.massage@example.com',
           password: 'pass123',
-          specialty: Specialty.MASSAGE,
+          specialty: ProviderSpecialty.MASSAGE,
           title: 'Registered Massage Therapist',
           licenseName: 'Massage Canada',
           licenseNumber: 'MB1002',
@@ -219,7 +220,7 @@ export class SeederService implements OnModuleInit {
           name: 'Cindy Zhang',
           email: 'cindy.chiro@example.com',
           password: 'pass123',
-          specialty: Specialty.CHIROPRACTOR,
+          specialty: ProviderSpecialty.CHIROPRACTOR,
           title: 'Doctor of Chiropractic',
           licenseName: 'Chiropractic Association',
           licenseNumber: 'CH2001',
@@ -230,7 +231,7 @@ export class SeederService implements OnModuleInit {
           name: 'David Stone',
           email: 'david.chiro@example.com',
           password: 'pass123',
-          specialty: Specialty.CHIROPRACTOR,
+          specialty: ProviderSpecialty.CHIROPRACTOR,
           title: 'Licensed Chiropractor',
           licenseName: 'Canadian Chiro Board',
           licenseNumber: 'CH2002',
@@ -241,7 +242,7 @@ export class SeederService implements OnModuleInit {
           name: 'Eva Lee',
           email: 'eva.acu@example.com',
           password: 'pass123',
-          specialty: Specialty.THERAPIST,
+          specialty: ProviderSpecialty.THERAPIST,
           title: 'Acupuncturist',
           licenseName: 'Manitoba Acupuncture College',
           licenseNumber: 'AC3001',
@@ -252,7 +253,7 @@ export class SeederService implements OnModuleInit {
           name: 'Frank Wu',
           email: 'frank.acu@example.com',
           password: 'pass123',
-          specialty: Specialty.THERAPIST,
+          specialty: ProviderSpecialty.THERAPIST,
           title: 'Therapy Specialist',
           licenseName: 'Therapy Alliance',
           licenseNumber: 'AC3002',
@@ -263,7 +264,7 @@ export class SeederService implements OnModuleInit {
           name: 'Grace Kim',
           email: 'grace.physio@example.com',
           password: 'pass123',
-          specialty: Specialty.NURSE,
+          specialty: ProviderSpecialty.NURSE,
           title: 'Physiotherapist',
           licenseName: 'Physiotherapy Manitoba',
           licenseNumber: 'PH4001',
@@ -274,7 +275,7 @@ export class SeederService implements OnModuleInit {
           name: "Henry O'Neil",
           email: 'henry.physio@example.com',
           password: 'pass123',
-          specialty: Specialty.NURSE,
+          specialty: ProviderSpecialty.NURSE,
           title: 'Rehab Nurse',
           licenseName: 'Nursing Board',
           licenseNumber: 'PH4002',
@@ -285,7 +286,7 @@ export class SeederService implements OnModuleInit {
           name: 'Irene Patel',
           email: 'irene.nutri@example.com',
           password: 'pass123',
-          specialty: Specialty.NUTRICIOLOGIST,
+          specialty: ProviderSpecialty.NUTRICIOLOGIST,
           title: 'Nutritionist',
           licenseName: 'Nutrition Canada',
           licenseNumber: 'NU5001',
@@ -296,7 +297,7 @@ export class SeederService implements OnModuleInit {
           name: 'James Wilson',
           email: 'james.nutri@example.com',
           password: 'pass123',
-          specialty: Specialty.NUTRICIOLOGIST,
+          specialty: ProviderSpecialty.NUTRICIOLOGIST,
           title: 'Diet Consultant',
           licenseName: 'Nutrition Manitoba',
           licenseNumber: 'NU5002',
@@ -307,7 +308,7 @@ export class SeederService implements OnModuleInit {
           name: 'Kathy Rivera',
           email: 'kathy.pod@example.com',
           password: 'pass123',
-          specialty: Specialty.PODIATOR,
+          specialty: ProviderSpecialty.PODIATOR,
           title: 'Foot Care Nurse',
           licenseName: 'Foot Health Institute',
           licenseNumber: 'FO6001',
@@ -318,7 +319,7 @@ export class SeederService implements OnModuleInit {
           name: 'Leo Brooks',
           email: 'leo.pod@example.com',
           password: 'pass123',
-          specialty: Specialty.PODIATOR,
+          specialty: ProviderSpecialty.PODIATOR,
           title: 'Podiatry Assistant',
           licenseName: 'Manitoba FootCare',
           licenseNumber: 'FO6002',
@@ -330,9 +331,9 @@ export class SeederService implements OnModuleInit {
           name: `Demo Provider ${i + 1}`,
           email: `demo${i + 1}@example.com`,
           password: 'pass123',
-          specialty: Object.values(Specialty)[
-            i % Object.values(Specialty).length
-          ] as Specialty,
+          specialty: Object.values(ProviderSpecialty)[
+            i % Object.values(ProviderSpecialty).length
+          ] as ProviderSpecialty,
           title: 'Specialist',
           licenseName: 'Demo License Org',
           licenseNumber: `DM${7000 + i}`,
@@ -350,7 +351,7 @@ export class SeederService implements OnModuleInit {
           name: data.name,
           email: data.email,
           passwordHash,
-          role: Role.Provider,
+          role: Role.PROVIDER as Role,
         });
 
         const provider = await this.providerRepo.save({
@@ -411,7 +412,7 @@ export class SeederService implements OnModuleInit {
 
   private async seedAdmins() {
     const adminCount = await this.userRepo.count({
-      where: { role: Role.Admin },
+      where: { role: Role.ADMIN as Role },
     });
     console.log('Admins in DB: ', adminCount);
     if (adminCount > 0) {
@@ -424,13 +425,13 @@ export class SeederService implements OnModuleInit {
         name: 'Admin One',
         email: 'admin1@example.com',
         passwordHash,
-        role: Role.Admin,
+        role: Role.ADMIN as Role,
       },
       {
         name: 'Admin Two',
         email: 'admin2@example.com',
         passwordHash,
-        role: Role.Admin,
+        role: Role.ADMIN as Role,
       },
     ];
     await this.userRepo.save(admins);
@@ -439,7 +440,7 @@ export class SeederService implements OnModuleInit {
 
   private async seedClients() {
     const clientCount = await this.userRepo.count({
-      where: { role: Role.Client },
+      where: { role: Role.CLIENT as Role },
     });
     console.log('Users in DB: ', clientCount);
     if (clientCount > 0) {
@@ -451,7 +452,7 @@ export class SeederService implements OnModuleInit {
       name: `Client ${i + 1}`,
       email: `client${i + 1}@example.com`,
       passwordHash,
-      role: Role.Client,
+      role: Role.CLIENT as Role,
     }));
     await this.userRepo.save(clients);
     console.log('✅ Seeded 20 clients');

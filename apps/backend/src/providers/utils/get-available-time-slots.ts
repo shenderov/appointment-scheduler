@@ -1,5 +1,5 @@
 import { addMinutes, isBefore, parse } from 'date-fns';
-import { Appointments } from '@appointments/entities/appointments.entity'; // Adjust paths as needed
+import { Appointment } from '@appointments/entities/appointment.entity'; // Adjust paths as needed
 import { Service } from '@services/entities/services.entity';
 import { ClinicHours } from '@clinic/entities/clinic-hours.entity';
 import { ClinicHoursException } from '@clinic/entities/clinic-hours-exception.entity';
@@ -11,7 +11,7 @@ interface TimeSlotParams {
   override?: ProviderHoursOverride | null;
   clinicHours?: ClinicHours | null;
   clinicException?: ClinicHoursException | null;
-  appointments: Appointments[];
+  appointments: Appointment[];
   service: Service;
   date: string; // 'YYYY-MM-DD'
   now: Date;

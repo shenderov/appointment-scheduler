@@ -1,12 +1,11 @@
-import { Controller, Post, Body, Get, UseGuards, Param } from '@nestjs/common';
+import { Controller, Post, Body, Get, UseGuards } from '@nestjs/common';
 import { ProvidersService } from '@providers/services/providers.service';
-import { CreateProviderDto } from '@providers/dtos/create-provider.dto';
+import { CreateProviderDto } from '@shared-models/dtos/providers/create-provider.dto';
 import { Provider } from '@providers/entities/providers.entity';
 import { AuthGuard } from '@nestjs/passport';
-import { ProviderPublicResponseDto } from '@providers/dtos/provider-public-response.dto';
-import { ProviderResponseDto } from '@providers/dtos/provider-response.dto';
+import { ProviderResponseDto } from '@shared-models/dtos/providers/provider-response.dto';
 
-@Controller('provider')
+@Controller('providers')
 export class ProvidersController {
   constructor(private readonly providersService: ProvidersService) {}
 
@@ -16,21 +15,9 @@ export class ProvidersController {
     return this.providersService.create(dto);
   }
 
-  @Get('/public/providers')
-  findAllPublic(): Promise<ProviderPublicResponseDto[]> {
-    return this.providersService.findAllPublic();
-  }
-
   @UseGuards(AuthGuard('jwt'))
   @Get('/providers')
   findAll(): Promise<ProviderResponseDto[]> {
     return this.providersService.findAll();
-  }
-
-  @Get('public/:id')
-  async getPublicProvider(
-    @Param('id') id: number,
-  ): Promise<ProviderPublicResponseDto> {
-    return this.providersService.getPublicProviderById(id);
   }
 }

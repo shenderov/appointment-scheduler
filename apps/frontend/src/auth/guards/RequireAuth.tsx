@@ -1,6 +1,6 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '@auth/hooks/useAuth';
-import { Role } from '@shared/models/enums';
+import { Role } from '@shared-models/enums/auth/role.enum';
 
 interface RequireAuthProps {
   allowedRoles?: Role[];
@@ -15,7 +15,7 @@ const RequireAuth: React.FC<RequireAuthProps> = ({ allowedRoles }) => {
   }
 
   // if user.role is Guest, treat as unauthenticated
-  if (!user || user.role === Role.Guest) {
+  if (!user || user.role === Role.GUEST) {
     return <Navigate to="/auth/login" state={{ from: location }} replace />;
   }
 

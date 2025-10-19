@@ -6,7 +6,7 @@ import {
   IsUUID,
   IsBoolean,
 } from 'class-validator';
-import { Specialty } from '../entities/providers.entity';
+import { ProviderSpecialty } from '@shared-models/enums/providers/provider-specialty.enum';
 
 export class CreateProviderDto {
   @IsUUID()
@@ -17,8 +17,8 @@ export class CreateProviderDto {
   @IsString()
   profileImageUrl?: string;
 
-  @IsEnum(Specialty)
-  specialty!: Specialty;
+  @IsEnum(ProviderSpecialty)
+  specialty!: ProviderSpecialty;
 
   @IsNotEmpty()
   @IsString()

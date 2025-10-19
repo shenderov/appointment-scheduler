@@ -1,5 +1,5 @@
 import { IsEmail, IsNotEmpty, IsString, IsIn } from 'class-validator';
-import { Role, CreatableRoles } from '@shared/models/enums';
+import { Role, CreatableRoles } from '@shared-models/enums/auth/role.enum';
 
 export class CreateUserDto {
   @IsNotEmpty()

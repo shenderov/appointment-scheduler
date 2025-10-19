@@ -1,6 +1,8 @@
 export enum ClinicHoursExceptionReason {
-  Opened = 'opened',
-  Closed = 'closed',
-  Extended = 'extended',
-  Shortened = 'shortened',
+  OPENED = 'opened',
+  CLOSED = 'closed',
+  EXTENDED = 'extended',
+  SHORTENED = 'shortened',
 }
+
+export const ClinicHoursExceptionReasons = [ClinicHoursExceptionReason.OPENED, ClinicHoursExceptionReason.CLOSED, ClinicHoursExceptionReason.EXTENDED, ClinicHoursExceptionReason.SHORTENED] as const;

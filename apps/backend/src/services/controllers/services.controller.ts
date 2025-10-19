@@ -9,15 +9,14 @@ import {
   NotFoundException,
   UseGuards,
 } from '@nestjs/common';
-import { ServicesService } from '../services/services.service';
-import { CreateServiceDto } from '../dtos/create-services.dto';
-import { UpdateServiceDto } from '../dtos/update-services.dto';
-import { Service } from '../entities/services.entity';
+import { ServicesService } from '@services/services/services.service';
+import { CreateServiceDto } from '@shared-models/dtos/services/create-services.dto';
+import { UpdateServiceDto } from '@shared-models/dtos/services/update-services.dto';
+import { Service } from '@services/entities/services.entity';
 import { AuthGuard } from '@nestjs/passport';
-import { ServicePublicResponseDto } from '../dtos/service-public-response.dto';
-import { ServiceResponseDto } from '../dtos/service-response.dto';
+import { ServiceResponseDto } from '@shared-models/dtos/services/service-response.dto';
 
-@Controller('service')
+@Controller('services')
 export class ServicesController {
   constructor(private readonly servicesService: ServicesService) {}
 
@@ -52,13 +51,8 @@ export class ServicesController {
     await this.servicesService.delete(id);
   }
 
-  @Get('/public/services')
-  findAllPublic(): Promise<ServicePublicResponseDto[]> {
-    return this.servicesService.findAllPublic();
-  }
-
   @UseGuards(AuthGuard('jwt'))
-  @Get('/services')
+  @Get()
   findAll(): Promise<ServiceResponseDto[]> {
     return this.servicesService.findAll();
   }

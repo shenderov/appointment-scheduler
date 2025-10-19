@@ -14,17 +14,8 @@ import { Service } from '@services/entities/services.entity';
 import { User } from '@users/entities/user.entity';
 import { ProviderHours } from '@providers/entities/provider-hours.entity';
 import { ProviderHoursOverride } from '@providers/entities/provider-hours-override.entity';
-import { Appointments } from '@appointments/entities/appointments.entity';
-
-export enum Specialty {
-  MASSAGE = 'Massage',
-  THERAPIST = 'Therapist',
-  CHIROPRACTOR = 'Chiropractor',
-  NURSE = 'Nurse',
-  NUTRICIOLOGIST = 'Nutriciologist',
-  PODIATOR = 'Podiator',
-  OTHER = 'Other',
-}
+import { Appointment } from '@appointments/entities/appointment.entity';
+import { ProviderSpecialty } from '@shared-models/enums/providers/provider-specialty.enum';
 
 @Entity('providers')
 export class Provider {
@@ -43,8 +34,8 @@ export class Provider {
   @UpdateDateColumn()
   updatedAt!: Date;
 
-  @Column({ type: 'enum', enum: Specialty })
-  specialty!: Specialty;
+  @Column({ type: 'enum', enum: ProviderSpecialty })
+  specialty!: ProviderSpecialty;
 
   @Column()
   title!: string;
@@ -74,6 +65,6 @@ export class Provider {
   })
   providerOverrides!: ProviderHoursOverride[];
 
-  @OneToMany(() => Appointments, (appointment) => appointment.provider)
-  appointments!: Appointments[];
+  @OneToMany(() => Appointment, (appointment) => appointment.provider)
+  appointments!: Appointment[];
 }

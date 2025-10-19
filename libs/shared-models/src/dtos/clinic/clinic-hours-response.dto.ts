@@ -1,4 +1,4 @@
-import type { Weekday } from '@shared/models/constants';
+import type { Weekday } from '@shared-models/constants/common/weekdays';
 
 export class ClinicDayHoursDto {
   weekday!: Weekday;

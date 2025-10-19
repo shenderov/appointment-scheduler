@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import { Role } from '@shared/models/enums';
+import { Role } from '@shared-models/enums/auth/role.enum';
 
 interface NavbarProps {
   role: Role;
@@ -30,7 +30,7 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
 
   const renderMenuItems = () => {
     switch (role) {
-      case Role.Admin:
+      case Role.ADMIN:
         return (
           <>
             <Button component={RouterLink} to="/admin" color="inherit">
@@ -55,7 +55,7 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
             </Button>
           </>
         );
-      case Role.Provider:
+      case Role.PROVIDER:
         return (
           <>
             <Button
@@ -77,7 +77,7 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
             </Button>
           </>
         );
-      case Role.Client:
+      case Role.CLIENT:
         return (
           <>
             <Button component={RouterLink} to="/search" color="inherit">
@@ -88,7 +88,7 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
             </Button>
           </>
         );
-      case Role.Guest:
+      case Role.GUEST:
       default:
         return (
           <>
@@ -104,7 +104,7 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
   };
 
   const showDropdown =
-    role === Role.Client || role === Role.Provider || role === Role.Admin;
+    role === Role.CLIENT || role === Role.PROVIDER || role === Role.ADMIN;
 
   return (
     <AppBar position="static" elevation={1}>

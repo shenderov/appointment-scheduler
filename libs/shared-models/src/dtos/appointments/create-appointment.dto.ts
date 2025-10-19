@@ -1,12 +1,9 @@
 import {
   IsBoolean,
   IsDateString,
-  IsEnum,
   IsInt,
-  IsOptional,
   IsString,
 } from 'class-validator';
-import { AppointmentStatus } from '../entities/appointments.entity';
 
 export class CreateAppointmentDto {
   @IsInt()
@@ -26,8 +23,4 @@ export class CreateAppointmentDto {
 
   @IsDateString()
   startTime!: string;
-
-  @IsOptional()
-  @IsEnum(['scheduled', 'cancelled', 'completed'])
-  status!: AppointmentStatus;
 }

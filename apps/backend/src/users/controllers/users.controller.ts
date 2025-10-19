@@ -1,11 +1,8 @@
-import { Controller, Post, Body, Get, UseGuards, Req } from '@nestjs/common';
+import { Controller, Post, Body, Get, UseGuards } from '@nestjs/common';
 import { UsersService } from '@users/services/users.service';
-import { CreateUserDto } from '@shared/models/dtos';
+import { CreateUserDto } from '@shared-models/dtos/users/create-user.dto';
 import { User } from '@users/entities/user.entity';
-import { Role } from '@shared/models/enums';
-import { Request } from 'express';
 import { AuthGuard } from '@nestjs/passport';
-import { OptionalJwtAuthGuard } from '@auth/guards/optional-jwt-auth.guard';
 
 @Controller('users')
 export class UsersController {
@@ -21,15 +18,5 @@ export class UsersController {
   @Get()
   findAll(): Promise<User[]> {
     return this.usersService.findAll();
-  }
-
-  @Get('me')
-  @UseGuards(OptionalJwtAuthGuard)
-  getAuthenticatedUser(@Req() req: Request) {
-    const user = req.user;
-    if (!user) {
-      return { name: 'Guest', role: Role.Guest };
-    }
-    return user;
   }
 }

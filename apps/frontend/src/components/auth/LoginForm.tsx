@@ -9,9 +9,9 @@ import {
   Alert,
 } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
-import type { LoginDto as LoginRequest } from '@shared/models/dtos';
+import type { LoginDto as LoginRequest } from '@shared-models/dtos/auth/login.dto';
 import { useAuth } from '@auth/hooks/useAuth';
-import { Role } from '@shared/models/enums';
+import { Role } from '@shared-models/enums/auth/role.enum';
 import type { User } from '@auth/context/AuthContextBase';
 
 interface LoginResponse {
@@ -49,7 +49,7 @@ const LoginForm = () => {
 
       // Fetch authenticated user
       const userRes: AxiosResponse<User> = await axios.get(
-        'http://localhost:3000/users/me',
+        'http://localhost:3000/auth/me',
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -70,13 +70,13 @@ const LoginForm = () => {
       }
 
       switch (user.role) {
-        case Role.Admin:
+        case Role.ADMIN:
           void navigate('/admin');
           break;
-        case Role.Provider:
+        case Role.PROVIDER:
           void navigate('/provider');
           break;
-        case Role.Client:
+        case Role.CLIENT:
           void navigate('/client');
           break;
         default:

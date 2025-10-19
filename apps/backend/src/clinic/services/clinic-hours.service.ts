@@ -6,7 +6,7 @@ import { ClinicHours } from '@clinic/entities/clinic-hours.entity';
 import {
   ClinicDayHoursDto,
   ClinicHoursPublicResponseDto,
-} from '@shared/models/dtos';
+} from '@shared-models/dtos/clinic/clinic-hours-response.dto';
 
 @Injectable()
 export class ClinicHoursService {

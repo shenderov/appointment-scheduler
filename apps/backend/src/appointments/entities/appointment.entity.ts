@@ -1,6 +1,7 @@
 import { Provider } from '@providers/entities/providers.entity';
 import { Service } from '@services/entities/services.entity';
 import { User } from '@users/entities/user.entity';
+import { AppointmentStatus } from '@shared-models/enums/appointments/status.enum';
 import {
   Column,
   Entity,
@@ -9,10 +10,8 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-export type AppointmentStatus = 'scheduled' | 'cancelled' | 'completed';
-
 @Entity('appointments')
-export class Appointments {
+export class Appointment {
   @PrimaryGeneratedColumn()
   id!: number;
 
@@ -36,8 +35,8 @@ export class Appointments {
 
   @Column({
     type: 'enum',
-    enum: ['scheduled', 'cancelled', 'completed'],
-    default: 'scheduled',
+    enum: AppointmentStatus,
+    default: AppointmentStatus.PENDING,
   })
   status!: AppointmentStatus;
 }

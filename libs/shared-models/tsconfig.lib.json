@@ -5,7 +5,10 @@
     "declaration": true,
     "types": ["node"],
     "paths": {
-      "@shared/models/*": ["libs/shared-models/*"]
+      "@shared-models/*": ["libs/shared-models/src/*"],
+      "@shared-models/dtos/*": ["libs/shared-models/src/dtos/*"],
+      "@shared-models/enums/*": ["libs/shared-models/src/enums/*"],
+      "@shared-models/constants/*": ["libs/shared-models/src/constants/*"]
     }
   },
   "include": ["src/**/*.ts"]

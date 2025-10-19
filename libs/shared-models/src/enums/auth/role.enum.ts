@@ -1,8 +1,8 @@
 export enum Role {
-  Guest = 'guest',
-  Client = 'client',
-  Provider = 'provider',
-  Admin = 'admin',
+  GUEST = 'guest',
+  CLIENT = 'client',
+  PROVIDER = 'provider',
+  ADMIN = 'admin',
 }
 
-export const CreatableRoles = [Role.Client, Role.Provider, Role.Admin] as const;
+export const CreatableRoles = [Role.CLIENT, Role.PROVIDER, Role.ADMIN] as const;

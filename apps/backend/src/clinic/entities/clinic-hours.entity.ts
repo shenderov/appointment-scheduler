@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
-import type { Weekday } from '@shared/models/constants';
+import type { Weekday } from '@shared-models/constants/common/weekdays';
 
 @Entity('clinic_hours')
 @Unique(['weekday'])

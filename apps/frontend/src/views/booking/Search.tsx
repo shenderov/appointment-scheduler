@@ -60,7 +60,7 @@ const Search = () => {
     const fetchServices = async () => {
       try {
         const res = await axios.get<Service[]>(
-          'http://localhost:3000/service/public/services',
+          'http://localhost:3000/services/public/services',
         );
         setServices(res.data);
         setServiceOptions(['All Services', ...res.data.map((s) => s.name)]);
@@ -72,7 +72,7 @@ const Search = () => {
     const fetchProviders = async () => {
       try {
         const res = await axios.get<Provider[]>(
-          'http://localhost:3000/provider/public/providers',
+          'http://localhost:3000/providers/public/providers',
         );
         setProviders(res.data);
       } catch (err) {

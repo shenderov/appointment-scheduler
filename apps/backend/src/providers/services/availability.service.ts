@@ -3,14 +3,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Raw } from 'typeorm';
 import { Provider } from '@providers/entities/providers.entity';
 import { Service } from '@services/entities/services.entity';
-import { Appointments } from '@appointments/entities/appointments.entity';
+import { Appointment } from '@appointments/entities/appointment.entity';
 import { ProviderHours } from '@providers/entities/provider-hours.entity';
 import { ProviderHoursOverride } from '@providers/entities/provider-hours-override.entity';
 import { ClinicHours } from '@clinic/entities/clinic-hours.entity';
 import { ClinicHoursException } from '@clinic/entities/clinic-hours-exception.entity';
 import { getAvailableTimeSlots } from '@providers/utils/get-available-time-slots';
 import { parseISO } from 'date-fns';
-import { Weekday } from '@shared/models/constants';
+import { Weekday } from '@shared-models/constants/common/weekdays';
+import { AppointmentStatus } from '@shared-models/enums/appointments/status.enum';
 
 @Injectable()
 export class AvailabilityService {
@@ -21,8 +22,8 @@ export class AvailabilityService {
     @InjectRepository(Service)
     private serviceRepo: Repository<Service>,
 
-    @InjectRepository(Appointments)
-    private appointmentsRepo: Repository<Appointments>,
+    @InjectRepository(Appointment)
+    private appointmentsRepo: Repository<Appointment>,
 
     @InjectRepository(ProviderHours)
     private providerHoursRepo: Repository<ProviderHours>,
@@ -83,7 +84,7 @@ export class AvailabilityService {
       where: {
         provider: { id: providerId },
         startTime: Raw((alias) => `DATE(${alias}) = :date`, { date: dateStr }),
-        status: 'scheduled',
+        status: AppointmentStatus.SCHEDULED,
       },
     });
 
