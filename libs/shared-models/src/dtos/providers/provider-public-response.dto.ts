@@ -1,7 +1,10 @@
+import { ProviderSpecialty } from "@shared-models/enums/providers/provider-specialty.enum";
+import { UserSummaryDto } from "@shared-models/dtos/users/user-summary.dto";
+
 export class ProviderPublicResponseDto {
   id!: number;
   profileImageUrl?: string;
-  specialty!: string;
+  specialty!: ProviderSpecialty;
   title!: string;
   bio!: string;
   license!: {
@@ -9,8 +12,5 @@ export class ProviderPublicResponseDto {
     licenseNumber: string;
   };
   serviceIds!: number[];
-  user!: {
-    id: number;
-    name: string;
-  };
+  user!: UserSummaryDto;
 }

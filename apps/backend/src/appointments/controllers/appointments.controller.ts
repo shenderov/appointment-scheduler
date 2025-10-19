@@ -30,9 +30,13 @@ export class AppointmentsController {
     interface AuthenticatedRequest extends Request {
       user?: { userId?: string };
     }
+
     const { user } = req as AuthenticatedRequest;
-    console.log('Authenticated user:', user);
-    return this.service.create(dto);
+
+    if (!user || !user.userId) {
+      throw new UnauthorizedException('User must be authenticated.');
+    }
+    return this.service.create(user.userId as unknown as number, dto);
   }
 
   @Get()

@@ -12,6 +12,8 @@ import { Provider } from '@providers/entities/providers.entity';
 import { Service } from '@services/entities/services.entity';
 import { User } from '@users/entities/user.entity';
 import { AppointmentStatus } from '@shared-models/enums/appointments/status.enum';
+import { AppointmentInfoClientDto } from '@shared-models/dtos/appointments/appointment-info-client.dto';
+import { toAppointmentInfoClientDto } from '@appointments/mappers/appointment.mapper';
 
 @Injectable()
 export class AppointmentsService {
@@ -20,7 +22,10 @@ export class AppointmentsService {
     private readonly appointmentRepo: Repository<Appointment>,
   ) {}
 
-  async create(data: CreateAppointmentDto): Promise<Appointment> {
+  async create(
+    clientId: number,
+    data: CreateAppointmentDto,
+  ): Promise<Appointment> {
     if (!data.acknowledgment) {
       throw new BadRequestException(
         'Acknowledgment of terms and conditions required',
@@ -30,7 +35,7 @@ export class AppointmentsService {
     const appointment = this.appointmentRepo.create({
       provider: { id: data.providerId } as Provider,
       service: { id: data.serviceId } as Service,
-      user: { id: data.userId } as User,
+      user: { id: clientId } as User,
       startTime: new Date(data.startTime),
       comments: data.comments,
       status: AppointmentStatus.PENDING,
@@ -67,10 +72,12 @@ export class AppointmentsService {
     return appointment;
   }
 
-  async findAllByClientId(userId: number): Promise<Appointment[]> {
-    return this.appointmentRepo.find({
+  async findAllByClientId(userId: number): Promise<AppointmentInfoClientDto[]> {
+    const appointments = await this.appointmentRepo.find({
       where: { user: { id: userId } },
     });
+
+    return appointments.map(toAppointmentInfoClientDto);
   }
 
   async updateStatus(

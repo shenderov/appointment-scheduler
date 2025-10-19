@@ -1,4 +1,5 @@
-import { UserResponseDto } from '@shared-models/dtos/users/user-response.dto';
+import { UserSummaryDto } from '@shared-models/dtos/users/user-summary.dto';
+import { ProviderSpecialty } from '@shared-models/enums/providers/provider-specialty.enum';
 
 export class ProviderResponseDto {
   id!: string;
@@ -6,7 +7,7 @@ export class ProviderResponseDto {
   isActive!: boolean;
   createdAt!: Date;
   updatedAt!: Date;
-  specialty!: string;
+  specialty!: ProviderSpecialty;
   title!: string;
   bio!: string;
   license!: {
@@ -14,5 +15,5 @@ export class ProviderResponseDto {
     licenseNumber: string;
   };
   serviceIds!: string[];
-  user!: UserResponseDto;
+  user!: UserSummaryDto;
 }
