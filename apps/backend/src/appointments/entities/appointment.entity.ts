@@ -1,4 +1,4 @@
-import { Provider } from '@providers/entities/providers.entity';
+import { Provider } from '@providers/entities/provider.entity';
 import { Service } from '@services/entities/services.entity';
 import { User } from '@users/entities/user.entity';
 import { AppointmentStatus } from '@shared-models/enums/appointments/status.enum';
@@ -21,7 +21,7 @@ export class Appointment {
 
   @ManyToOne(() => User, { eager: true })
   @JoinColumn({ name: 'userId' })
-  user!: User;
+  client!: User;
 
   @ManyToOne(() => Service, { eager: true })
   @JoinColumn({ name: 'serviceId' })

@@ -16,6 +16,6 @@ export class ClinicHours {
   @Column({ type: 'time' })
   endTime!: string;
 
-  @Column({ default: true })
+  @Column({ default: false })
   isOpen!: boolean;
 }

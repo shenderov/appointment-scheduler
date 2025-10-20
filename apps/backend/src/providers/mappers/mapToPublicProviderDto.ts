@@ -1,4 +1,4 @@
-import { Provider } from '@providers/entities/providers.entity';
+import { Provider } from '@providers/entities/provider.entity';
 import { ProviderPublicResponseDto } from '@shared-models/dtos/providers/provider-public-response.dto';
 
 export function mapToPublicProviderDto(

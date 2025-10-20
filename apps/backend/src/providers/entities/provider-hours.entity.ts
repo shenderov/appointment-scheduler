@@ -6,7 +6,7 @@ import {
   JoinColumn,
   Unique,
 } from 'typeorm';
-import { Provider } from '@providers/entities/providers.entity';
+import { Provider } from '@providers/entities/provider.entity';
 import { Weekday } from '@shared-models/constants/common/weekdays';
 
 @Entity('provider_hours')
@@ -31,6 +31,6 @@ export class ProviderHours {
   @Column({ type: 'time' })
   endTime!: string;
 
-  @Column({ default: true })
+  @Column({ default: false })
   isAvailable!: boolean;
 }

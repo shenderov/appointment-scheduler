@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProvidersController } from './controllers/providers.controller';
 import { ProvidersPublicController } from './controllers/providers.public.controller';
 import { ProvidersService } from './services/providers.service';
-import { Provider } from './entities/providers.entity';
+import { Provider } from './entities/provider.entity';
 import { AuthModule } from '@auth/auth.module';
 import { Service } from '@services/entities/services.entity';
 import { Appointment } from '@appointments/entities/appointment.entity';

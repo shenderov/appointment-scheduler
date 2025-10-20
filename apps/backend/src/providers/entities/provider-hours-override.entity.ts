@@ -6,7 +6,7 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { Provider } from '@providers/entities/providers.entity';
+import { Provider } from '@providers/entities/provider.entity';
 
 @Entity('provider_hours_override')
 @Unique(['providerId', 'date'])

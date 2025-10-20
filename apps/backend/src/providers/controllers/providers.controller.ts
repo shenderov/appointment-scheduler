@@ -1,7 +1,7 @@
 import { Controller, Post, Body, Get, UseGuards } from '@nestjs/common';
 import { ProvidersService } from '@providers/services/providers.service';
 import { CreateProviderDto } from '@shared-models/dtos/providers/create-provider.dto';
-import { Provider } from '@providers/entities/providers.entity';
+import { Provider } from '@providers/entities/provider.entity';
 import { AuthGuard } from '@nestjs/passport';
 import { ProviderResponseDto } from '@shared-models/dtos/providers/provider-response.dto';
 

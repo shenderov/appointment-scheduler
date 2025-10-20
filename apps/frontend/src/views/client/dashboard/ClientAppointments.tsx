@@ -39,7 +39,7 @@ type Appointment = {
   id: number;
   provider: Provider;
   userId: number;
-  user: User;
+  client: User;
   service: Service;
   startTime: string;
   endTime: string;
@@ -143,7 +143,7 @@ const ClientAppointments: React.FC = () => {
                       <strong>Comments:</strong> {a.comments || 'None'}
                     </Typography>
                     <Typography variant="body2" component="div">
-                      <strong>Booked For:</strong> {a.user?.name || 'Unknown'}
+                      <strong>Booked For:</strong> {a.client?.name || 'Unknown'}
                     </Typography>
                   </TableCell>
                 </TableRow>

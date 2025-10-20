@@ -1,7 +1,7 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Raw } from 'typeorm';
-import { Provider } from '@providers/entities/providers.entity';
+import { Provider } from '@providers/entities/provider.entity';
 import { Service } from '@services/entities/services.entity';
 import { Appointment } from '@appointments/entities/appointment.entity';
 import { ProviderHours } from '@providers/entities/provider-hours.entity';

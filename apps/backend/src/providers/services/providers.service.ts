@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Provider } from '@providers/entities/providers.entity';
+import { Provider } from '@providers/entities/provider.entity';
 import { CreateProviderDto } from '@shared-models/dtos/providers/create-provider.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ProviderPublicResponseDto } from '@shared-models/dtos/providers/provider-public-response.dto';

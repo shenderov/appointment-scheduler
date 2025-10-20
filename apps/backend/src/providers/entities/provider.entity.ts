@@ -25,7 +25,7 @@ export class Provider {
   @Column({ nullable: true })
   profileImageUrl?: string;
 
-  @Column({ default: true })
+  @Column({ default: false })
   isActive!: boolean;
 
   @CreateDateColumn()
@@ -63,7 +63,7 @@ export class Provider {
   @OneToMany(() => ProviderHoursOverride, (override) => override.provider, {
     cascade: true,
   })
-  providerOverrides!: ProviderHoursOverride[];
+  providerHoursOverrides!: ProviderHoursOverride[];
 
   @OneToMany(() => Appointment, (appointment) => appointment.provider)
   appointments!: Appointment[];

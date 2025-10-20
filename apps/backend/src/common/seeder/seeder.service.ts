@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Service } from '@services/entities/services.entity';
 import { User } from '@users/entities/user.entity';
-import { Provider } from '@providers/entities/providers.entity';
+import { Provider } from '@providers/entities/provider.entity';
 import * as bcrypt from 'bcrypt';
 import { Role } from '@shared-models/enums/auth/role.enum';
 import { ClinicHours } from '@clinic/entities/clinic-hours.entity';

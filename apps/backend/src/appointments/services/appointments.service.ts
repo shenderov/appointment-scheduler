@@ -8,7 +8,7 @@ import { Repository } from 'typeorm';
 import { Appointment } from '@appointments/entities/appointment.entity';
 import { CreateAppointmentDto } from '@shared-models/dtos/appointments/create-appointment.dto';
 import { UpdateAppointmentStatusDto } from '@shared-models/dtos/appointments/update-appointment-status.dto';
-import { Provider } from '@providers/entities/providers.entity';
+import { Provider } from '@providers/entities/provider.entity';
 import { Service } from '@services/entities/services.entity';
 import { User } from '@users/entities/user.entity';
 import { AppointmentStatus } from '@shared-models/enums/appointments/status.enum';
@@ -35,7 +35,7 @@ export class AppointmentsService {
     const appointment = this.appointmentRepo.create({
       provider: { id: data.providerId } as Provider,
       service: { id: data.serviceId } as Service,
-      user: { id: clientId } as User,
+      client: { id: clientId } as User,
       startTime: new Date(data.startTime),
       comments: data.comments,
       status: AppointmentStatus.PENDING,
@@ -74,7 +74,7 @@ export class AppointmentsService {
 
   async findAllByClientId(userId: number): Promise<AppointmentInfoClientDto[]> {
     const appointments = await this.appointmentRepo.find({
-      where: { user: { id: userId } },
+      where: { client: { id: userId } },
     });
 
     return appointments.map(toAppointmentInfoClientDto);

@@ -16,8 +16,8 @@ export function toAppointmentInfoClientDto(
       },
     },
     client: {
-      id: entity.user.id,
-      name: entity.user.name,
+      id: entity.client.id,
+      name: entity.client.name,
     },
     service: {
       id: entity.service.id,
