@@ -1,28 +1,14 @@
 import React from 'react';
 import { Paper, Typography, Box, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-
-type Service = {
-  id: string;
-  name: string;
-  description: string;
-  duration_min: number;
-};
-
-type Provider = {
-  id: string;
-  user: {
-    id: string;
-    name: string;
-  };
-  serviceIds: string[];
-};
+import { ProviderPublicResponseDto } from '@shared-models/src/dtos/providers/provider-public-response.dto';
+import { ServicePublicResponseDto } from '@shared-models/src/dtos/services/service-public-response.dto';
 
 interface StepServiceProps {
-  provider: Provider | null;
-  availableServices: Service[];
-  selectedServiceId: string | undefined;
-  onSelectService: (service: Service) => void;
+  provider: ProviderPublicResponseDto | null;
+  availableServices: ServicePublicResponseDto[];
+  selectedServiceId: number | undefined;
+  onSelectService: (service: ServicePublicResponseDto) => void;
   onNext: () => void;
   filters?: {
     query?: string;
@@ -78,11 +64,8 @@ const StepService: React.FC<StepServiceProps> = ({
               }}
             >
               <Typography variant="subtitle1">{service.name}</Typography>
-              <Typography variant="body2" color="text.secondary">
-                {service.description}
-              </Typography>
               <Typography variant="caption" display="block" sx={{ mt: 1 }}>
-                {service.duration_min} minutes
+                {service.durationMin} minutes
               </Typography>
             </Paper>
           ))}

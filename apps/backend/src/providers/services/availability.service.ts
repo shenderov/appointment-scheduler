@@ -92,11 +92,6 @@ export class AvailabilityService {
     const maxBookingDays = 60;
     const minAdvanceMinutes = 120;
 
-    console.log(providerHours);
-    console.log(override);
-    console.log(clinicHours);
-    console.log(clinicException);
-
     return getAvailableTimeSlots({
       providerHours: providerHours || undefined,
       override: override || undefined,

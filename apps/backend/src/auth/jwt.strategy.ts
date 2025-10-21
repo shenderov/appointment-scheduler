@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import { UserResponseDto } from '@shared-models/dtos/users/user-response.dto';
 import { Role } from '@shared-models/enums/auth/role.enum';
 
 export interface JwtPayload {
-  sub: string;
+  sub: number;
   name: string;
   email: string;
   role: Role;
@@ -16,13 +17,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: 'your_jwt_secret', // TODO: move to env
+      secretOrKey: process.env.JWT_SECRET || 'your_jwt_secret', // ✅ configurable via env
     });
   }
 
-  validate(payload: JwtPayload) {
+  validate(payload: JwtPayload): UserResponseDto {
     return {
-      userId: payload.sub,
+      id: payload.sub,
       name: payload.name,
       email: payload.email,
       role: payload.role,

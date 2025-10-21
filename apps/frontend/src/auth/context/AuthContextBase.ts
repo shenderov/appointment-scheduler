@@ -1,18 +1,11 @@
 import { createContext } from 'react';
-import { Role } from '@shared-models/enums/auth/role.enum';
-
-export interface User {
-  userId?: string;
-  name: string;
-  email?: string;
-  role: Role;
-}
+import { UserResponseDto } from '@shared-models/dtos/users/user-response.dto';
 
 export interface AuthContextType {
-  user: User;
+  user: UserResponseDto;
   loading: boolean;
   refreshUser: () => Promise<void>;
-  updateUser: (user: User) => void;
+  updateUser: (user: UserResponseDto) => void;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(

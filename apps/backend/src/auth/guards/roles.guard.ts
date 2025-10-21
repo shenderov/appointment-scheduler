@@ -5,12 +5,12 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import { UserResponseDto } from '@shared-models/dtos/users/user-response.dto';
 import { Role } from '@shared-models/enums/auth/role.enum';
+import { ROLES_KEY } from '@auth/decorators/roles.decorator';
 
 interface AuthenticatedRequest {
-  user?: {
-    role?: Role;
-  };
+  user?: UserResponseDto;
 }
 
 @Injectable()
@@ -18,7 +18,7 @@ export class RolesGuard implements CanActivate {
   constructor(private readonly reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
-    const requiredRoles = this.reflector.getAllAndOverride<Role[]>('roles', [
+    const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [
       context.getHandler(),
       context.getClass(),
     ]);
@@ -27,9 +27,13 @@ export class RolesGuard implements CanActivate {
     const request = context.switchToHttp().getRequest<AuthenticatedRequest>();
     const userRole = request.user?.role;
 
-    if (!userRole || !requiredRoles.includes(userRole)) {
+    if (!userRole) {
+      throw new ForbiddenException('Missing user role in request.');
+    }
+
+    if (!requiredRoles.includes(userRole)) {
       throw new ForbiddenException(
-        'You do not have permission to access this resource.',
+        `Access denied: requires role(s) [${requiredRoles.join(', ')}], but current role is ${userRole}`,
       );
     }
 

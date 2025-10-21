@@ -2,7 +2,7 @@ import { UserSummaryDto } from '@shared-models/dtos/users/user-summary.dto';
 import { ProviderSpecialty } from '@shared-models/enums/providers/provider-specialty.enum';
 
 export class ProviderResponseDto {
-  id!: string;
+  id!: number;
   profileImageUrl?: string;
   isActive!: boolean;
   createdAt!: Date;

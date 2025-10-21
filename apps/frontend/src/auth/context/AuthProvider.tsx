@@ -1,26 +1,32 @@
 import React, { useEffect, useState } from 'react';
-import api from '@api/axios';
+import api from '@api/client';
 import { Role } from '@shared-models/enums/auth/role.enum';
-import { AuthContext, type User } from '@auth/context/AuthContextBase';
+import { AuthContext } from '@auth/context/AuthContextBase';
+import { UserResponseDto } from '@shared-models/src/dtos/users/user-response.dto';
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [user, setUser] = useState<User>({ name: 'Guest', role: Role.GUEST });
+  const [user, setUser] = useState<UserResponseDto>({
+    id: 0,
+    name: 'Guest',
+    email: '',
+    role: Role.GUEST,
+  });
   const [loading, setLoading] = useState(true);
 
   const refreshUser = async (): Promise<void> => {
     try {
-      const res = await api.get<User>('/auth/me');
+      const res = await api.get<UserResponseDto>('/auth/me');
       setUser(res.data);
     } catch {
-      setUser({ name: 'Guest', role: Role.GUEST });
+      setUser({ id: 0, name: 'Guest', email: '', role: Role.GUEST });
     } finally {
       setLoading(false);
     }
   };
 
-  const updateUser = (u: User): void => setUser(u);
+  const updateUser = (u: UserResponseDto): void => setUser(u);
 
   useEffect(() => {
     void refreshUser();

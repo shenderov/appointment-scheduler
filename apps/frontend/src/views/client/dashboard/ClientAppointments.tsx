@@ -10,45 +10,13 @@ import {
   Paper,
   Typography,
 } from '@mui/material';
-
-type AppointmentStatus = 'scheduled' | 'cancelled' | 'completed';
-
-type Service = {
-  id: number;
-  name: string;
-  description: string;
-  duration_min: number;
-};
-
-type Provider = {
-  id: number;
-  user: {
-    id: number;
-    name: string;
-  };
-  specialty: string;
-  title: string;
-};
-
-type User = {
-  id: number;
-  name: string;
-};
-
-type Appointment = {
-  id: number;
-  provider: Provider;
-  userId: number;
-  client: User;
-  service: Service;
-  startTime: string;
-  endTime: string;
-  status: AppointmentStatus;
-  comments?: string;
-};
+import { AppointmentInfoClientDto } from '@shared-models/src/dtos/appointments/appointment-info-client.dto';
+import { getAppointments } from '@api/appointments/appointments';
 
 const ClientAppointments: React.FC = () => {
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [appointments, setAppointments] = useState<AppointmentInfoClientDto[]>(
+    [],
+  );
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -66,17 +34,8 @@ const ClientAppointments: React.FC = () => {
           return;
         }
 
-        const res = await axios.get<Appointment[]>(
-          'http://localhost:3000/appointments',
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-            withCredentials: false,
-          },
-        );
-
-        setAppointments(res.data);
+        const res = await getAppointments();
+        setAppointments(res);
       } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
           console.error('Failed to fetch appointments:', err);

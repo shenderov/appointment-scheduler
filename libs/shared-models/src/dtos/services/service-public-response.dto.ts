@@ -1,5 +1,5 @@
 export class ServicePublicResponseDto {
-  id!: string;
+  id!: number;
   name!: string;
   durationMin!: number;
 }

@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import axios, { AxiosResponse } from 'axios';
 import {
   Box,
   Button,
@@ -9,14 +8,10 @@ import {
   Alert,
 } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
-import type { LoginDto as LoginRequest } from '@shared-models/dtos/auth/login.dto';
 import { useAuth } from '@auth/hooks/useAuth';
 import { Role } from '@shared-models/enums/auth/role.enum';
-import type { User } from '@auth/context/AuthContextBase';
-
-interface LoginResponse {
-  access_token: string;
-}
+import { LoginDto } from '@shared-models/dtos/auth/login.dto';
+import { login, getCurrentUser } from '@api/auth/auth';
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
@@ -33,31 +28,16 @@ const LoginForm = () => {
     setError('');
 
     try {
-      const data: LoginRequest = { email, password };
-      const res: AxiosResponse<LoginResponse> = await axios.post(
-        'http://localhost:3000/auth/login',
-        data,
-      );
+      const credentials: LoginDto = { email, password };
 
-      const token = res.data.access_token;
+      const token = await login(credentials);
       if (!token) {
         setError('No token received');
         return;
       }
-      // Save token
       localStorage.setItem('token', token);
 
-      // Fetch authenticated user
-      const userRes: AxiosResponse<User> = await axios.get(
-        'http://localhost:3000/auth/me',
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-
-      const user = userRes.data;
+      const user = await getCurrentUser();
       updateUser(user);
 
       const redirectTo = (location.state as { from?: string })?.from;

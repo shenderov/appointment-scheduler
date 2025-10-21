@@ -3,37 +3,26 @@ import { Stepper, Step, StepLabel, Box } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@auth/hooks/useAuth';
 import { Role } from '@shared-models/enums/auth/role.enum';
-import axios from 'axios';
 import dayjs from 'dayjs';
 
 import StepService from '@components/booking/stepper-steps/StepService';
 import StepCalendar from '@components/booking/stepper-steps/StepCalendar';
 import StepReview from '@components/booking/stepper-steps/StepReview';
 import StepConfirmation from '@components/booking/stepper-steps/StepConfirmation';
+import { fetchProviderById } from '@api/providers/providers.public';
+import { fetchServices } from '@api/services/services.public';
+import { fetchAvailableSlots } from '@api/providers/availability.public';
+import { createAppointment } from '@api/appointments/appointments';
+import { ProviderPublicResponseDto } from '@shared-models/src/dtos/providers/provider-public-response.dto';
+import { ServicePublicResponseDto } from '@shared-models/src/dtos/services/service-public-response.dto';
 
 const steps = ['Service', 'Calendar', 'Review', 'Confirmation'];
 const STORAGE_KEY = 'appointment-stepper';
 
-type Service = {
-  id: string;
-  name: string;
-  description: string;
-  duration_min: number;
-};
-
-type Provider = {
-  id: string;
-  user: {
-    id: string;
-    name: string;
-  };
-  serviceIds: string[];
-};
-
 interface SavedStepperState {
-  provider?: Provider | null;
+  provider?: ProviderPublicResponseDto | null;
   activeStep?: number;
-  service?: Service | null;
+  service?: ServicePublicResponseDto | null;
   selectedDate?: string | null;
   selectedTime?: string | null;
   acknowledged?: boolean;
@@ -54,10 +43,14 @@ function safeParseJSON<T>(jsonString: string | null): T | null {
 }
 
 const AppointmentBookingStepper = () => {
-  const [availableServices, setAvailableServices] = useState<Service[]>([]);
+  const [availableServices, setAvailableServices] = useState<
+    ServicePublicResponseDto[]
+  >([]);
   const [availableTimes, setAvailableTimes] = useState<string[]>([]);
-  const [provider, setProvider] = useState<Provider | null>(null);
-  const [service, setService] = useState<Service | null>(null);
+  const [provider, setProvider] = useState<ProviderPublicResponseDto | null>(
+    null,
+  );
+  const [service, setService] = useState<ServicePublicResponseDto | null>(null);
   const [activeStep, setActiveStep] = useState<number>(0);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
@@ -76,30 +69,23 @@ const AppointmentBookingStepper = () => {
   useEffect(() => {
     const providerId =
       state?.providerId ??
-      (() => {
-        const saved = sessionStorage.getItem(STORAGE_KEY);
-        const parsed = safeParseJSON<SavedStepperState>(saved);
-        return parsed?.providerId ?? null;
-      })();
+      safeParseJSON<SavedStepperState>(sessionStorage.getItem(STORAGE_KEY))
+        ?.providerId;
 
     if (!providerId) return;
 
-    void axios
-      .get<Provider>(`http://localhost:3000/providers/public/${providerId}`)
-      .then((res) => setProvider(res.data))
+    void fetchProviderById(Number(providerId))
+      .then(setProvider)
       .catch((err) => console.error('Failed to fetch provider:', err));
   }, [state]);
 
   useEffect(() => {
     if (!provider?.serviceIds?.length) return;
-
-    void axios
-      .get<Service[]>('http://localhost:3000/services/public/services')
-      .then((res) => {
-        const filtered = res.data.filter((s: Service) =>
-          provider.serviceIds.includes(s.id),
+    void fetchServices()
+      .then((services) => {
+        setAvailableServices(
+          services.filter((s) => provider.serviceIds.includes(s.id)),
         );
-        setAvailableServices(filtered);
       })
       .catch((err) => console.error('Failed to fetch services:', err));
   }, [provider]);
@@ -129,17 +115,8 @@ const AppointmentBookingStepper = () => {
   const fetchAvailableTimes = async (date: string): Promise<void> => {
     if (!service?.id || !provider?.id) return;
     try {
-      const res = await axios.get<string[]>(
-        'http://localhost:3000/availability/public/slots',
-        {
-          params: {
-            providerId: provider.id,
-            serviceId: service.id,
-            date,
-          },
-        },
-      );
-      setAvailableTimes(res.data);
+      const times = await fetchAvailableSlots(provider.id, service.id, date);
+      setAvailableTimes(times);
     } catch (err) {
       console.error('Failed to fetch available times:', err);
       setAvailableTimes([]);
@@ -189,46 +166,22 @@ const AppointmentBookingStepper = () => {
   const handleConfirm = async (): Promise<void> => {
     if (!provider || !service || !selectedDate || !selectedTime) return;
 
-    try {
-      const start = dayjs(
-        `${selectedDate} ${selectedTime}`,
-        'YYYY-MM-DD HH:mm',
-      );
-      if (!start.isValid()) {
-        console.error('Invalid start time', selectedDate, selectedTime);
-        alert('Invalid date or time selected. Please try again.');
-        return;
-      }
-      const token = localStorage.getItem('token');
-
-      if (!token) {
-        console.error('Missing authentication token');
-        return;
-      }
-
-      await axios.post(
-        'http://localhost:3000/appointments',
-        {
-          providerId: provider.id,
-          serviceId: service.id,
-          userId: user.userId,
-          startTime: start.toISOString(),
-          acknowledgment: acknowledged,
-          comments: comments,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          withCredentials: false,
-        },
-      );
-
-      handleNext();
-    } catch (err) {
-      console.error('Failed to create appointment:', err);
-      alert('Failed to book the appointment. Please try again.');
+    const start = dayjs(`${selectedDate} ${selectedTime}`, 'YYYY-MM-DD HH:mm');
+    if (!start.isValid()) {
+      alert('Invalid date or time selected.');
+      return;
     }
+    console.log('handleConfirm, user: ', user);
+    await createAppointment({
+      providerId: provider.id,
+      serviceId: service.id,
+      userId: user.id,
+      startTime: start.toISOString(),
+      acknowledgment: acknowledged,
+      comments,
+    });
+
+    handleNext();
   };
 
   return (
@@ -268,8 +221,8 @@ const AppointmentBookingStepper = () => {
 
         {activeStep === 2 && (
           <StepReview
-            provider={provider as Provider}
-            service={service as Service}
+            provider={provider as ProviderPublicResponseDto}
+            service={service as ServicePublicResponseDto}
             selectedDate={selectedDate}
             selectedTime={selectedTime}
             acknowledged={acknowledged}

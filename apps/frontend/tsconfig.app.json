@@ -20,6 +20,6 @@
       "@shared-models/constants/*": ["../../libs/shared-models/src/constants/*"]
     }
   },
-  "include": ["src"],
+  "include": ["src", "vite-env.d.ts"],
   "exclude": ["node_modules", "dist", "test"]
 }

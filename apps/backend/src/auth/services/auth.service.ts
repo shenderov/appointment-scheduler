@@ -4,28 +4,24 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { LoginDto } from '@shared-models/dtos/auth/login.dto';
-import { Repository } from 'typeorm';
-import { User } from '@users/entities/user.entity';
-import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Role } from '@shared-models/enums/auth/role.enum';
+import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
+import { User } from '@users/entities/user.entity';
+import { LoginDto } from '@shared-models/dtos/auth/login.dto';
+import { UserResponseDto } from '@shared-models/dtos/users/user-response.dto';
+import { JwtPayload } from '@auth/jwt.strategy';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private jwtService: JwtService,
+    private readonly jwtService: JwtService,
     @InjectRepository(User)
-    private userRepository: Repository<User>,
+    private readonly userRepository: Repository<User>,
   ) {}
 
-  signToken(user: {
-    id: string;
-    name: string;
-    email: string;
-    role: Role;
-  }): string {
-    const payload = {
+  private signToken(user: UserResponseDto): string {
+    const payload: JwtPayload = {
       sub: user.id,
       name: user.name,
       email: user.email,
@@ -39,23 +35,24 @@ export class AuthService {
       where: { email: loginDto.email },
     });
 
-    if (!user) throw new NotFoundException('User not found');
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
 
-    const isValid: boolean = await bcrypt.compare(
-      loginDto.password,
-      user.passwordHash,
-    );
-    if (!isValid) throw new UnauthorizedException('Invalid password');
+    const isValid = await bcrypt.compare(loginDto.password, user.passwordHash);
+    if (!isValid) {
+      throw new UnauthorizedException('Invalid password');
+    }
 
-    const payload = {
-      email: user.email,
+    const userDto: UserResponseDto = {
+      id: user.id,
       name: user.name,
-      sub: user.id,
+      email: user.email,
       role: user.role,
     };
 
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token: this.signToken(userDto),
     };
   }
 }

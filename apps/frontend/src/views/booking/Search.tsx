@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import {
   Box,
   Container,
@@ -15,91 +14,59 @@ import {
   Divider,
 } from '@mui/material';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { fetchServices } from '@api/services/services.public';
+import { fetchProviders } from '@api/providers/providers.public';
+import { ProviderPublicResponseDto } from '@shared-models/src/dtos/providers/provider-public-response.dto';
+import { ServicePublicResponseDto } from '@shared-models/src/dtos/services/service-public-response.dto';
 
 interface LocationState {
   query?: string;
   service?: string;
 }
 
-type Service = {
-  id: string;
-  name: string;
-  duration_min: number;
-};
-
-type Provider = {
-  id: string;
-  profileImageUrl?: string;
-  specialty: string;
-  title: string;
-  license: {
-    licenseName: string;
-    licenseNumber: string;
-  };
-  user: {
-    id: string;
-    name: string;
-  };
-  serviceIds: string[];
-  bio?: string;
-};
-
 const Search = () => {
   const [query, setQuery] = useState('');
   const [service, setService] = useState('All Services');
-  const [services, setServices] = useState<Service[]>([]);
+  const [services, setServices] = useState<ServicePublicResponseDto[]>([]);
   const [serviceOptions, setServiceOptions] = useState<string[]>([
     'All Services',
   ]);
-  const [providers, setProviders] = useState<Provider[]>([]);
-  const [expandedCard, setExpandedCard] = useState<string | null>(null);
+  const [providers, setProviders] = useState<ProviderPublicResponseDto[]>([]);
+  const [expandedCard, setExpandedCard] = useState<number | null>(null);
+
   const location = useLocation();
   const state = location.state as LocationState | undefined;
 
   useEffect(() => {
-    const fetchServices = async () => {
+    const loadData = async () => {
       try {
-        const res = await axios.get<Service[]>(
-          'http://localhost:3000/services/public/services',
-        );
-        setServices(res.data);
-        setServiceOptions(['All Services', ...res.data.map((s) => s.name)]);
+        const [servicesData, providersData] = await Promise.all([
+          fetchServices(),
+          fetchProviders(),
+        ]);
+        setServices(servicesData);
+        setServiceOptions(['All Services', ...servicesData.map((s) => s.name)]);
+        setProviders(providersData);
       } catch (err) {
-        console.error('Failed to fetch services:', err);
+        console.error('Failed to load search data:', err);
       }
     };
 
-    const fetchProviders = async () => {
-      try {
-        const res = await axios.get<Provider[]>(
-          'http://localhost:3000/providers/public/providers',
-        );
-        setProviders(res.data);
-      } catch (err) {
-        console.error('Failed to fetch providers:', err);
-      }
-    };
-
-    void fetchServices();
-    void fetchProviders();
+    void loadData();
     if (typeof state?.query === 'string') setQuery(state.query);
     if (typeof state?.service === 'string') setService(state.service);
   }, [state?.query, state?.service]);
 
-  const getServiceNameById = (id: string) => {
-    const service = services.find((s) => s.id === id);
-    return service ? service.name : id;
-  };
+  const getServiceNameById = (id: number) =>
+    services.find((s) => s.id === id)?.name || id;
 
   const selectedService = services.find((s) => s.name === service);
 
   const filteredProviders = providers.filter((p) => {
     const matchesName = p.user.name.toLowerCase().includes(query.toLowerCase());
-
     const matchesService =
       service === 'All Services' ||
-      p.serviceIds.includes(selectedService?.id || '');
-
+      p.serviceIds.includes(selectedService?.id ?? -1);
     return matchesName && matchesService;
   });
 
@@ -135,7 +102,7 @@ const Search = () => {
 
         <Grid container spacing={3}>
           {filteredProviders.map((p) => (
-            <Grid item xs={12} sm={6} md={4} key={p.id}>
+            <Grid xs={12} sm={6} md={4} key={p.id}>
               <Card
                 variant="outlined"
                 sx={{
