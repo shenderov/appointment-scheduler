@@ -9,24 +9,24 @@ import RequireAuth from '@auth/guards/RequireAuth';
 import DefaultLayout from '@layout/DefaultLayout';
 import DashboardLayout from '@layout/DashboardLayout';
 
-import AdminDashboard from '@views/admin/dashboard/AdminDashboard';
-import AdminAppointments from '@views/admin/dashboard/AdminAppointments';
-import AdminClients from '@views/admin/dashboard/AdminClients';
-import AdminProviders from '@views/admin/dashboard/AdminProviders';
-import AdminUsers from '@views/admin/dashboard/AdminUsers';
-import ClinicSettings from '@views/admin/dashboard/ClinicSettings';
-import GeneralSettings from '@views/admin/dashboard/GeneralSettings';
+import AdminDashboard from '@views/dashboard/admin/AdminDashboard';
+import AdminAppointments from '@views/dashboard/admin/AdminAppointments';
+import AdminClients from '@views/dashboard/admin/AdminClients';
+import AdminProviders from '@views/dashboard/admin/AdminProviders';
+import AdminUsers from '@views/dashboard/admin/AdminUsers';
+import ClinicSettings from '@views/dashboard/admin/ClinicSettings';
+import GeneralSettings from '@views/dashboard/admin/GeneralSettings';
 
-import ProviderDashboard from '@views/provider/dashboard/ProviderDashboard';
-import ProviderAppointments from '@views/provider/dashboard/ProviderAppointments';
-import ProviderClients from '@views/provider/dashboard/ProviderClients';
-import ProviderSettings from '@views/provider/dashboard/ProviderSettings';
+import ProviderDashboard from '@views/dashboard/provider/ProviderDashboard';
+import ProviderAppointments from '@views/dashboard/provider/ProviderAppointments';
+import ProviderClients from '@views/dashboard/provider/ProviderClients';
+import ProviderSettings from '@views/dashboard/provider/ProviderSettings';
 import RecordAppointment from '@views/provider/RecordAppointment';
 
-import ClientDashboard from '@views/client/dashboard/ClientDashboard';
-import ClientAppointments from '@views/client/dashboard/ClientAppointments';
-import ClientInsuranceDetails from '@views/client/dashboard/ClientInsuranceDetails';
-import ClientContactDetails from '@views/client/dashboard/ClientContactDetails';
+import ClientDashboard from '@views/dashboard/client/ClientDashboard';
+import ClientAppointments from '@views/dashboard/client/ClientAppointments';
+import ClientInsuranceDetails from '@views/dashboard/client/ClientInsuranceDetails';
+import ClientContactDetails from '@views/dashboard/client/ClientContactDetails';
 
 import Unauthorized from '@views/shared/Unauthorized';
 import NotFound from '@views/shared/NotFound';

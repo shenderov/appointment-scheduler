@@ -9,7 +9,12 @@ const Logout = () => {
 
   useEffect(() => {
     localStorage.removeItem('token');
-    updateUser({ name: 'Guest', role: Role.GUEST });
+    updateUser({
+      name: 'Guest',
+      role: Role.GUEST,
+      id: 0,
+      email: '',
+    });
     void navigate('/');
   }, [updateUser, navigate]);
 
