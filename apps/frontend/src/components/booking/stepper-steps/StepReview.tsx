@@ -6,20 +6,12 @@ import {
   TextField,
   FormControlLabel,
 } from '@mui/material';
-
-interface Provider {
-  user: {
-    name: string;
-  };
-}
-
-interface Service {
-  name: string;
-}
+import { ProviderPublicResponseDto } from '@shared-models/src/dtos/providers/provider-public-response.dto';
+import { ServicePublicResponseDto } from '@shared-models/src/dtos/services/service-public-response.dto';
 
 interface StepReviewProps {
-  provider: Provider;
-  service: Service;
+  provider: ProviderPublicResponseDto;
+  service: ServicePublicResponseDto;
   selectedDate: string | null;
   selectedTime: string | null;
   acknowledged: boolean;
