@@ -25,8 +25,9 @@ const ProviderCard = ({
   onToggle,
   services,
 }: ProviderCardProps) => {
-  const getServiceNameById = (id: number) =>
-    services.find((s) => s.id === id)?.name || `Service #${id}`;
+  const availableServices = services.filter((s) =>
+    provider.serviceIds.includes(s.id),
+  );
 
   return (
     <Card
@@ -75,13 +76,16 @@ const ProviderCard = ({
                 Services:
               </Typography>
               <ul style={{ margin: 0, paddingLeft: '1rem' }}>
-                {provider.serviceIds.map((id) => (
-                  <li key={id}>
-                    <Typography variant="body2">
-                      {getServiceNameById(id)}
-                    </Typography>
-                  </li>
-                ))}
+                {provider.serviceIds.map((id) => {
+                  const service = availableServices.find((s) => s.id === id);
+                  return (
+                    <li key={id}>
+                      <Typography variant="body2">
+                        {service ? service.name : `Service #${id}`}
+                      </Typography>
+                    </li>
+                  );
+                })}
               </ul>
             </Box>
           )}
@@ -94,7 +98,8 @@ const ProviderCard = ({
           component={RouterLink}
           to="/booking"
           state={{
-            providerId: provider.id,
+            provider,
+            availableServices,
             fromLogin: false,
             filters: {
               query: '',

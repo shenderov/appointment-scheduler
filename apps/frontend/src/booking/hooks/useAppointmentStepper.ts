@@ -3,7 +3,6 @@ import dayjs from 'dayjs';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Role } from '@shared-models/enums/auth/role.enum';
 import { useAuth } from '@auth/hooks/useAuth';
-import { fetchProviderById } from '@api/providers/providers.public';
 import { fetchServices } from '@api/services/services.public';
 import { fetchAvailableSlots } from '@api/providers/availability.public';
 import {
@@ -18,6 +17,7 @@ const STORAGE_KEY = 'appointment-stepper';
 
 interface SavedStepperState {
   provider?: ProviderPublicResponseDto | null;
+  availableServices?: ServicePublicResponseDto[] | null;
   activeStep?: number;
   service?: ServicePublicResponseDto | null;
   availableTimes?: string[] | null;
@@ -25,7 +25,6 @@ interface SavedStepperState {
   selectedTime?: string | null;
   acknowledged?: boolean;
   comments?: string;
-  providerId?: string;
   fromLogin?: boolean;
 }
 
@@ -66,6 +65,7 @@ export function useAppointmentStepper() {
           const parsed = JSON.parse(saved) as SavedStepperState;
           const step = user.role === Role.CLIENT ? parsed.activeStep : 0;
           setProvider(parsed.provider || null);
+          setAvailableServices(parsed.availableServices || []);
           setActiveStep(step || 0);
           setService(parsed.service || null);
           setAvailableTimes(parsed.availableTimes || []);
@@ -82,20 +82,24 @@ export function useAppointmentStepper() {
         sessionStorage.removeItem(STORAGE_KEY);
       }
     }
-
-    if (state?.providerId) {
-      void fetchProviderById(Number(state.providerId)).then(setProvider);
+    if (state?.provider) {
+      setProvider(state?.provider);
+    }
+    if (state?.availableServices) {
+      setAvailableServices(state?.availableServices);
     }
   }, [location.state, state, user.role]);
 
   useEffect(() => {
     if (!provider?.serviceIds?.length) return;
-    void fetchServices().then((services) =>
-      setAvailableServices(
-        services.filter((s) => provider.serviceIds.includes(s.id)),
-      ),
-    );
-  }, [provider]);
+    if (availableServices.length === 0) {
+      void fetchServices().then((services) =>
+        setAvailableServices(
+          services.filter((s) => provider.serviceIds.includes(s.id)),
+        ),
+      );
+    }
+  }, [availableServices, provider]);
 
   const fetchTimes = async (date: string) => {
     if (!service?.id || !provider?.id) return;
@@ -111,6 +115,7 @@ export function useAppointmentStepper() {
       activeStep,
       service,
       availableTimes,
+      availableServices,
       selectedDate,
       selectedTime,
       acknowledged,
@@ -123,6 +128,7 @@ export function useAppointmentStepper() {
     activeStep,
     service,
     availableTimes,
+    availableServices,
     selectedDate,
     selectedTime,
     acknowledged,
