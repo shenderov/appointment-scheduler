@@ -4,18 +4,7 @@ import Navbar from '@layout/components/Navbar';
 import Footer from '@layout/components/Footer';
 import { useAuth } from '@auth/hooks/useAuth';
 import DashboardSidebar from '@layout/components/dashboard/DashboardSidebar';
-
-interface SidebarItem {
-  text: string;
-  to: string;
-}
-
-interface DashboardLayoutProps {
-  sidebarItems: SidebarItem[];
-  sidebarTitle?: string;
-  drawerWidth?: number;
-  navbarHeight?: number;
-}
+import type { DashboardLayoutProps } from '@layout/types/dashboard';
 
 const DashboardLayout = ({
   sidebarItems,

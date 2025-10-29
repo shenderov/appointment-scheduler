@@ -31,8 +31,9 @@ import ClientContactDetails from '@dashboard/client/ClientContactDetails';
 import Unauthorized from '@views/shared/Unauthorized';
 import NotFound from '@views/shared/NotFound';
 import { Role } from '@shared-models/enums/auth/role.enum';
+import { SidebarItem } from '@layout/types/dashboard';
 
-const adminSidebarItems = [
+const adminSidebarItems: SidebarItem[] = [
   { text: 'Dashboard', to: '/admin' },
   { text: 'Appointments', to: '/admin/appointments' },
   { text: 'Providers', to: '/admin/providers' },
@@ -42,14 +43,14 @@ const adminSidebarItems = [
   { text: 'Settings', to: '/admin/settings' },
 ];
 
-const providerSidebarItems = [
+const providerSidebarItems: SidebarItem[] = [
   { text: 'Dashboard', to: '/provider' },
   { text: 'Appointments', to: '/provider/appointments' },
   { text: 'Clients', to: '/provider/clients' },
   { text: 'Settings', to: '/provider/settings' },
 ];
 
-const clientSidebarItems = [
+const clientSidebarItems: SidebarItem[] = [
   { text: 'Dashboard', to: '/client' },
   { text: 'Appointments', to: '/client/appointments' },
   { text: 'Contact Details', to: '/client/contact' },
