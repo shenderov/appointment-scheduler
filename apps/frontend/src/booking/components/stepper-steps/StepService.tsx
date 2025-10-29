@@ -1,10 +1,11 @@
 import React from 'react';
-import { Paper, Typography, Box, Button } from '@mui/material';
+import { Paper, Typography, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { ProviderPublicResponseDto } from '@shared-models/src/dtos/providers/provider-public-response.dto';
 import { ServicePublicResponseDto } from '@shared-models/src/dtos/services/service-public-response.dto';
 import { UserResponseDto } from '@shared-models/src/dtos/users/user-response.dto';
 import { Role } from '@shared-models/src/enums/auth/role.enum';
+import StepLayout from '@booking/components/stepper-steps/StepLayout';
 
 interface StepServiceProps {
   provider: ProviderPublicResponseDto | null;
@@ -80,40 +81,29 @@ const StepService: React.FC<StepServiceProps> = ({
     }
   };
 
+  const backLabel =
+    role === Role.CLIENT || role === Role.GUEST ? 'Back to Search' : 'Back';
+
   return (
-    <Box display="flex" flexDirection="column" gap={4}>
-      <Box>
-        <Typography variant="h6" gutterBottom>
-          Select a Service from {provider.user.name}
-        </Typography>
-        <Typography variant="body2" sx={{ mb: 2 }}>
-          Please choose a service offered by the provider.
-        </Typography>
-
-        <Box
-          display="grid"
-          gridTemplateColumns={{
-            xs: '1fr',
-            sm: 'repeat(2, 1fr)',
-          }}
-          gap={2}
-        >
-          {renderedServices}
-        </Box>
+    <StepLayout
+      title={`Select a Service from ${provider.user.name}`}
+      description="Please choose a service offered by the provider."
+      onBack={handleBack}
+      onNext={nextStep}
+      nextDisabled={!service}
+      backLabel={backLabel}
+    >
+      <Box
+        display="grid"
+        gridTemplateColumns={{
+          xs: '1fr',
+          sm: 'repeat(2, 1fr)',
+        }}
+        gap={2}
+      >
+        {renderedServices}
       </Box>
-
-      <Box display="flex" gap={2} mt={3}>
-        <Button variant="outlined" onClick={handleBack}>
-          {role === Role.CLIENT || role === Role.GUEST
-            ? 'Back to Search'
-            : 'Back'}
-        </Button>
-
-        <Button variant="contained" onClick={nextStep} disabled={!service}>
-          Next
-        </Button>
-      </Box>
-    </Box>
+    </StepLayout>
   );
 };
 

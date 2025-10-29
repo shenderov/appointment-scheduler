@@ -1,5 +1,5 @@
+import StepLayout from '@booking/components/stepper-steps/StepLayout';
 import {
-  Button,
   Typography,
   Box,
   Checkbox,
@@ -45,11 +45,13 @@ const StepReview: React.FC<StepReviewProps> = ({
   user,
 }) => {
   return (
-    <Box>
-      <Typography variant="h6" gutterBottom>
-        Review Appointment Details
-      </Typography>
-
+    <StepLayout
+      title="Review Appointment Details"
+      onBack={backStep}
+      onNext={confirm}
+      nextDisabled={!acknowledged}
+      nextLabel="Confirm Appointment"
+    >
       {user &&
         (user.role === Role.ADMIN || user.role === Role.PROVIDER) &&
         selectedClient && (
@@ -95,14 +97,7 @@ const StepReview: React.FC<StepReviewProps> = ({
         rows={3}
         sx={{ mt: 2 }}
       />
-
-      <Box sx={{ mt: 3, display: 'flex', justifyContent: 'space-between' }}>
-        <Button onClick={backStep}>Back</Button>
-        <Button variant="contained" disabled={!acknowledged} onClick={confirm}>
-          Confirm Appointment
-        </Button>
-      </Box>
-    </Box>
+    </StepLayout>
   );
 };
 

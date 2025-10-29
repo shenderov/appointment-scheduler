@@ -3,7 +3,6 @@ import {
   Box,
   Typography,
   TextField,
-  Button,
   List,
   ListItemButton,
   ListItemText,
@@ -15,6 +14,7 @@ import { UserResponseDto } from '@shared-models/src/dtos/users/user-response.dto
 import { ServicePublicResponseDto } from '@shared-models/src/dtos/services/service-public-response.dto';
 import { ProviderPublicResponseDto } from '@shared-models/src/dtos/providers/provider-public-response.dto';
 import { Role } from '@shared-models/src/enums/auth/role.enum';
+import StepLayout from '@booking/components/stepper-steps/StepLayout';
 
 interface StepUserProps {
   selectedClient: UserResponseDto | null;
@@ -91,11 +91,44 @@ const StepUser: React.FC<StepUserProps> = ({
     setClients([]);
   };
 
+  const handleBack = () => {
+    void navigate('/search', {
+      state: {
+        query: filters?.query || '',
+        service: filters?.service || 'All Services',
+      },
+    });
+    setTimeout(() => {
+      if (filters?.scrollY !== undefined) {
+        window.scrollTo(0, filters.scrollY);
+      }
+    }, 50);
+  };
+
+  const handleNext = () => {
+    if (
+      fromLogin &&
+      (user?.role === Role.ADMIN || user?.role === Role.PROVIDER) &&
+      selectedClient &&
+      provider &&
+      service &&
+      selectedDate &&
+      selectedTime
+    ) {
+      setActiveStep(3);
+    } else {
+      nextStep();
+    }
+  };
+
   return (
-    <Box>
-      <Typography variant="h6" gutterBottom>
-        Select Client
-      </Typography>
+    <StepLayout
+      title="Select Client"
+      onBack={handleBack}
+      onNext={handleNext}
+      nextDisabled={!selectedClient}
+      backLabel="Back to Search"
+    >
       <Box sx={{ position: 'relative', mt: 2 }}>
         <TextField
           fullWidth
@@ -151,49 +184,7 @@ const StepUser: React.FC<StepUserProps> = ({
           </Typography>
         </Box>
       )}
-      <Box display="flex" gap={2} mt={3}>
-        <Button
-          variant="outlined"
-          onClick={() => {
-            void navigate('/search', {
-              state: {
-                query: filters?.query || '',
-                service: filters?.service || 'All Services',
-              },
-            });
-            setTimeout(() => {
-              if (filters?.scrollY !== undefined) {
-                window.scrollTo(0, filters.scrollY);
-              }
-            }, 50);
-          }}
-        >
-          Back to Search
-        </Button>
-
-        <Button
-          variant="contained"
-          onClick={() => {
-            if (
-              fromLogin &&
-              (user?.role === Role.ADMIN || user?.role === Role.PROVIDER) &&
-              selectedClient &&
-              provider &&
-              service &&
-              selectedDate &&
-              selectedTime
-            ) {
-              setActiveStep(3);
-            } else {
-              nextStep();
-            }
-          }}
-          disabled={!selectedClient}
-        >
-          Next
-        </Button>
-      </Box>
-    </Box>
+    </StepLayout>
   );
 };
 
