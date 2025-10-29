@@ -67,10 +67,10 @@ const AppRouter = () => (
           <Route path="/search" element={<Search />} />
           <Route path="/booking" element={<AppointmentBookingStepper />} />
           <Route path="/auth/login" element={<Login />} />
+          <Route path="/auth/logout" element={<Logout />} />
 
           {/* Authenticated routes that should keep DefaultLayout */}
           <Route element={<RequireAuth />}>
-            <Route path="/auth/logout" element={<Logout />} />
             <Route path="/account" element={<AccountSettings />} />
 
             {/* Admin + Provider only. Uses DefaultLayout */}

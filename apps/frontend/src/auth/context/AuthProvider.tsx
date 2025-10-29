@@ -29,7 +29,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const updateUser = (u: UserResponseDto): void => setUser(u);
 
   useEffect(() => {
-    void refreshUser();
+    let isMounted = true;
+    const init = async () => {
+      try {
+        await refreshUser();
+      } catch {
+        if (isMounted) {
+          setUser({ id: 0, name: 'Guest', email: '', role: Role.GUEST });
+        }
+      }
+    };
+    void init();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return (
