@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from '@views/Home';
-import Search from '@views/booking/Search';
-import AppointmentBookingStepper from '@views/booking/stepper/AppointmentBookingStepper';
+import Search from '@booking/views/Search';
+import AppointmentBookingStepper from '@booking/views/AppointmentBookingStepper';
 import Login from '@views/Login';
 import Logout from '@views/Logout';
 import AccountSettings from '@views/AccountSettings';
@@ -9,24 +9,24 @@ import RequireAuth from '@auth/guards/RequireAuth';
 import DefaultLayout from '@layout/DefaultLayout';
 import DashboardLayout from '@layout/DashboardLayout';
 
-import AdminDashboard from '@views/dashboard/admin/AdminDashboard';
-import AdminAppointments from '@views/dashboard/admin/AdminAppointments';
-import AdminClients from '@views/dashboard/admin/AdminClients';
-import AdminProviders from '@views/dashboard/admin/AdminProviders';
-import AdminUsers from '@views/dashboard/admin/AdminUsers';
-import ClinicSettings from '@views/dashboard/admin/ClinicSettings';
-import GeneralSettings from '@views/dashboard/admin/GeneralSettings';
+import AdminDashboard from '@dashboard/admin/AdminDashboard';
+import AdminAppointments from '@dashboard/admin/AdminAppointments';
+import AdminClients from '@dashboard/admin/AdminClients';
+import AdminProviders from '@dashboard/admin/AdminProviders';
+import AdminUsers from '@dashboard/admin/AdminUsers';
+import ClinicSettings from '@dashboard/admin/ClinicSettings';
+import GeneralSettings from '@dashboard/admin/GeneralSettings';
 
-import ProviderDashboard from '@views/dashboard/provider/ProviderDashboard';
-import ProviderAppointments from '@views/dashboard/provider/ProviderAppointments';
-import ProviderClients from '@views/dashboard/provider/ProviderClients';
-import ProviderSettings from '@views/dashboard/provider/ProviderSettings';
-import RecordAppointment from '@views/provider/RecordAppointment';
+import ProviderDashboard from '@dashboard/provider/ProviderDashboard';
+import ProviderAppointments from '@dashboard/provider/ProviderAppointments';
+import ProviderClients from '@dashboard/provider/ProviderClients';
+import ProviderSettings from '@dashboard/provider/ProviderSettings';
+import RecordAppointment from '@dashboard/provider/RecordAppointment';
 
-import ClientDashboard from '@views/dashboard/client/ClientDashboard';
-import ClientAppointments from '@views/dashboard/client/ClientAppointments';
-import ClientInsuranceDetails from '@views/dashboard/client/ClientInsuranceDetails';
-import ClientContactDetails from '@views/dashboard/client/ClientContactDetails';
+import ClientDashboard from '@dashboard/client/ClientDashboard';
+import ClientAppointments from '@dashboard/client/ClientAppointments';
+import ClientInsuranceDetails from '@dashboard/client/ClientInsuranceDetails';
+import ClientContactDetails from '@dashboard/client/ClientContactDetails';
 
 import Unauthorized from '@views/shared/Unauthorized';
 import NotFound from '@views/shared/NotFound';

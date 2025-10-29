@@ -12,6 +12,20 @@ export const createAppointment = async (
   return res.data;
 };
 
+export const createAppointmentAsAdmin = async (
+  payload: CreateAppointmentDto,
+  approve: boolean,
+): Promise<AppointmentInfoClientDto> => {
+  const res = await api.post<AppointmentInfoClientDto>(
+    '/appointments/admin/appointments',
+    payload,
+    {
+      params: { approve },
+    },
+  );
+  return res.data;
+};
+
 export const getAppointments = async (): Promise<
   AppointmentInfoClientDto[]
 > => {

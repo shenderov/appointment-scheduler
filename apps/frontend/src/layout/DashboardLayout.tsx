@@ -1,9 +1,9 @@
 import { Outlet } from 'react-router-dom';
 import { Box } from '@mui/material';
-import Navbar from '@components/layout/Navbar';
-import Footer from '@components/layout/Footer';
+import Navbar from '@layout/components/Navbar';
+import Footer from '@layout/components/Footer';
 import { useAuth } from '@auth/hooks/useAuth';
-import DashboardSidebar from '@components/layout/dashboard/DashboardSidebar';
+import DashboardSidebar from '@layout/components/dashboard/DashboardSidebar';
 
 interface SidebarItem {
   text: string;

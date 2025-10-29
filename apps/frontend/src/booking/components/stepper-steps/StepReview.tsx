@@ -8,6 +8,8 @@ import {
 } from '@mui/material';
 import { ProviderPublicResponseDto } from '@shared-models/src/dtos/providers/provider-public-response.dto';
 import { ServicePublicResponseDto } from '@shared-models/src/dtos/services/service-public-response.dto';
+import { Role } from '@shared-models/enums/auth/role.enum';
+import { UserResponseDto } from '@shared-models/dtos/users/user-response.dto';
 
 interface StepReviewProps {
   provider: ProviderPublicResponseDto;
@@ -15,11 +17,15 @@ interface StepReviewProps {
   selectedDate: string | null;
   selectedTime: string | null;
   acknowledged: boolean;
+  approve: boolean;
   comments: string;
   setAcknowledged: (value: boolean) => void;
+  setApprove: (value: boolean) => void;
   setComments: (value: string) => void;
-  onBack: () => void;
-  onConfirm: () => void;
+  backStep: () => void;
+  confirm: () => void;
+  selectedClient: UserResponseDto | null;
+  user?: UserResponseDto | null;
 }
 
 const StepReview: React.FC<StepReviewProps> = ({
@@ -28,33 +34,57 @@ const StepReview: React.FC<StepReviewProps> = ({
   selectedDate,
   selectedTime,
   acknowledged,
+  approve,
   comments,
   setAcknowledged,
+  setApprove,
   setComments,
-  onBack,
-  onConfirm,
+  backStep,
+  confirm,
+  selectedClient,
+  user,
 }) => {
   return (
     <Box>
       <Typography variant="h6" gutterBottom>
-        Review Appointment
+        Review Appointment Details
       </Typography>
 
+      {user &&
+        (user.role === Role.ADMIN || user.role === Role.PROVIDER) &&
+        selectedClient && (
+          <Typography>Client: {selectedClient.name}</Typography>
+        )}
       <Typography>Provider: {provider.user.name}</Typography>
       <Typography>Service: {service.name}</Typography>
       <Typography>Date: {selectedDate || 'Not selected'}</Typography>
       <Typography>Time: {selectedTime || 'Not selected'}</Typography>
 
-      <FormControlLabel
-        control={
-          <Checkbox
-            checked={acknowledged}
-            onChange={(e) => setAcknowledged(e.target.checked)}
+      <Box sx={{ mt: 2 }}>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={acknowledged}
+              onChange={(e) => setAcknowledged(e.target.checked)}
+            />
+          }
+          label="I acknowledge the terms and conditions"
+          sx={{ display: 'block', mb: 1 }}
+        />
+
+        {user && (user.role === Role.ADMIN || user.role === Role.PROVIDER) && (
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={approve}
+                onChange={(a) => setApprove(a.target.checked)}
+              />
+            }
+            label="Approve this appointment immediately after creation"
+            sx={{ display: 'block' }}
           />
-        }
-        label="I acknowledge the terms and conditions"
-        sx={{ mt: 2 }}
-      />
+        )}
+      </Box>
 
       <TextField
         fullWidth
@@ -67,12 +97,8 @@ const StepReview: React.FC<StepReviewProps> = ({
       />
 
       <Box sx={{ mt: 3, display: 'flex', justifyContent: 'space-between' }}>
-        <Button onClick={onBack}>Back</Button>
-        <Button
-          variant="contained"
-          disabled={!acknowledged}
-          onClick={onConfirm}
-        >
+        <Button onClick={backStep}>Back</Button>
+        <Button variant="contained" disabled={!acknowledged} onClick={confirm}>
           Confirm Appointment
         </Button>
       </Box>

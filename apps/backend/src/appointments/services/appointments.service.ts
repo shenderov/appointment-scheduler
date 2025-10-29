@@ -14,17 +14,21 @@ import { User } from '@users/entities/user.entity';
 import { AppointmentStatus } from '@shared-models/enums/appointments/status.enum';
 import { AppointmentInfoClientDto } from '@shared-models/dtos/appointments/appointment-info-client.dto';
 import { toAppointmentInfoClientDto } from '@appointments/mappers/appointment.mapper';
+import { Role } from '@shared-models/enums/auth/role.enum';
 
 @Injectable()
 export class AppointmentsService {
   constructor(
     @InjectRepository(Appointment)
     private readonly appointmentRepo: Repository<Appointment>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
 
   async create(
-    clientId: number,
     data: CreateAppointmentDto,
+    self: boolean = true,
+    approve: boolean = false,
   ): Promise<Appointment> {
     if (!data.acknowledgment) {
       throw new BadRequestException(
@@ -32,10 +36,73 @@ export class AppointmentsService {
       );
     }
 
+    if (!self) {
+      const client = await this.userRepository.findOne({
+        where: { id: data.userId },
+        select: ['role'],
+      });
+
+      if (!client) {
+        throw new BadRequestException('Client is not found');
+      }
+
+      if (client.role !== Role.CLIENT) {
+        throw new BadRequestException(
+          'Can only create appointments for client users',
+        );
+      }
+    }
+
     const appointment = this.appointmentRepo.create({
       provider: { id: data.providerId } as Provider,
       service: { id: data.serviceId } as Service,
-      client: { id: clientId } as User,
+      client: { id: data.userId } as User,
+      startTime: new Date(data.startTime),
+      comments: data.comments,
+      status: approve ? AppointmentStatus.SCHEDULED : AppointmentStatus.PENDING,
+    });
+
+    try {
+      return await this.appointmentRepo.save(appointment);
+    } catch (err: unknown) {
+      if (
+        typeof err === 'object' &&
+        err !== null &&
+        'code' in err &&
+        (err as { code?: string }).code === '23503'
+      ) {
+        throw new BadRequestException('Invalid provider or service ID');
+      }
+      throw err;
+    }
+  }
+
+  async createAsAdmin(data: CreateAppointmentDto): Promise<Appointment> {
+    if (!data.acknowledgment) {
+      throw new BadRequestException(
+        'Acknowledgment of terms and conditions required',
+      );
+    }
+
+    const client = await this.userRepository.findOne({
+      where: { id: data.userId },
+      select: ['role'],
+    });
+
+    if (!client) {
+      throw new BadRequestException('Client is not found');
+    }
+
+    if (client.role !== Role.CLIENT) {
+      throw new BadRequestException(
+        'Can only create appointments for client users',
+      );
+    }
+
+    const appointment = this.appointmentRepo.create({
+      provider: { id: data.providerId } as Provider,
+      service: { id: data.serviceId } as Service,
+      client: { id: data.userId } as User,
       startTime: new Date(data.startTime),
       comments: data.comments,
       status: AppointmentStatus.PENDING,

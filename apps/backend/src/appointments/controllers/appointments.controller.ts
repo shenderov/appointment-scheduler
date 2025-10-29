@@ -10,6 +10,8 @@ import {
   UseGuards,
   Req,
   UnauthorizedException,
+  BadRequestException,
+  Query,
 } from '@nestjs/common';
 import { AppointmentsService } from '@appointments/services/appointments.service';
 import { CreateAppointmentDto } from '@shared-models/dtos/appointments/create-appointment.dto';
@@ -33,7 +35,22 @@ export class AppointmentsController {
     if (!user || !user.id) {
       throw new UnauthorizedException('User must be authenticated.');
     }
-    return this.service.create(user.id as unknown as number, dto);
+    if (user.role === Role.CLIENT && user.id !== dto.userId) {
+      throw new BadRequestException('Clients can only book own appointments');
+    }
+    dto.userId = user.id;
+    return this.service.create(dto);
+  }
+
+  @Post('admin/appointments')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ADMIN, Role.PROVIDER)
+  createAsAdmin(
+    @Query('approve') approve: string,
+    @Body() dto: CreateAppointmentDto,
+  ) {
+    const shouldApprove = approve === 'true';
+    return this.service.create(dto, false, shouldApprove);
   }
 
   @Get()
