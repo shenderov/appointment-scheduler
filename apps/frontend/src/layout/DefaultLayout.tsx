@@ -10,17 +10,7 @@ const DefaultLayout = () => {
   return (
     <>
       <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-        <Box
-          sx={{
-            zIndex: (theme) => theme.zIndex.drawer + 1,
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-          }}
-        >
-          <Navbar role={user?.role} />
-        </Box>
+        <Navbar role={user?.role} />
         <main>
           <Outlet />
         </main>
