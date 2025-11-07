@@ -1,7 +1,6 @@
 import { IsEmail, IsNotEmpty, IsString, IsIn } from 'class-validator';
-import { Role, CreatableRoles } from '@shared-models/enums/auth/role.enum';
 
-export class CreateUserDto {
+export class SignUpDto {
   @IsNotEmpty()
   @IsString()
   firstName!: string;
@@ -16,7 +15,4 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
   password!: string;
-
-  @IsIn(CreatableRoles)
-  role!: Role;
 }

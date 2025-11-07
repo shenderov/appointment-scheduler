@@ -16,6 +16,7 @@ import { LoginResponseDto } from '@shared-models/dtos/auth/login-response.dto';
 import { UserResponseDto } from '@shared-models/dtos/users/user-response.dto';
 import { ChangePasswordDto } from '@shared-models/dtos/auth/change-password.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { SignUpDto } from '@shared-models/dtos/auth/sign-up.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -38,6 +39,11 @@ export class AuthController {
     }
     await this.authService.changePassword(user.id, dto);
     return { message: 'Password changed successfully.' };
+  }
+
+  @Post('signup')
+  async signup(@Body() dto: SignUpDto): Promise<LoginResponseDto> {
+    return this.authService.signup(dto);
   }
 
   @Get('me')
