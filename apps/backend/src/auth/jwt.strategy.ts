@@ -1,32 +1,52 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { UserResponseDto } from '@shared-models/dtos/users/user-response.dto';
 import { Role } from '@shared-models/enums/auth/role.enum';
+import { User } from '@users/entities/user.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 export interface JwtPayload {
   sub: number;
   name: string;
   email: string;
   role: Role;
+  iat?: number;
 }
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor() {
+  constructor(
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+  ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: process.env.JWT_SECRET || 'your_jwt_secret', // ✅ configurable via env
+      secretOrKey: process.env.JWT_SECRET || 'your_jwt_secret',
     });
   }
 
-  validate(payload: JwtPayload): UserResponseDto {
+  async validate(payload: JwtPayload): Promise<UserResponseDto> {
+    const user = await this.userRepository.findOne({
+      where: { id: payload.sub },
+    });
+    if (!user) throw new UnauthorizedException();
+
+    if (
+      user.passwordChangedAt &&
+      payload.iat &&
+      payload.iat * 1000 < user.passwordChangedAt.getTime()
+    ) {
+      throw new UnauthorizedException();
+    }
+
     return {
-      id: payload.sub,
-      name: payload.name,
-      email: payload.email,
-      role: payload.role,
+      id: user.id,
+      name: `${user.firstName} ${user.lastName}`,
+      email: user.email,
+      role: user.role,
     };
   }
 }

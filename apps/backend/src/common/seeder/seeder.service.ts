@@ -347,7 +347,10 @@ export class SeederService implements OnModuleInit {
       ];
 
       for (const data of seedData) {
+        const [firstName, lastName] = data.name.split(' ', 2);
         const user = await this.userRepo.save({
+          firstName,
+          lastName,
           name: data.name,
           email: data.email,
           passwordHash,
@@ -422,13 +425,15 @@ export class SeederService implements OnModuleInit {
     const passwordHash = await bcrypt.hash('password123', 10);
     const admins: Partial<User>[] = [
       {
-        name: 'Admin One',
+        firstName: 'Admin',
+        lastName: 'One',
         email: 'admin1@example.com',
         passwordHash,
         role: Role.ADMIN as Role,
       },
       {
-        name: 'Admin Two',
+        firstName: 'Admin',
+        lastName: 'Two',
         email: 'admin2@example.com',
         passwordHash,
         role: Role.ADMIN as Role,
@@ -449,7 +454,8 @@ export class SeederService implements OnModuleInit {
     }
     const passwordHash = await bcrypt.hash('password123', 10);
     const clients: Partial<User>[] = Array.from({ length: 20 }).map((_, i) => ({
-      name: `Client ${i + 1}`,
+      firstName: 'Client',
+      lastName: `${i + 1}`,
       email: `client${i + 1}@example.com`,
       passwordHash,
       role: Role.CLIENT as Role,

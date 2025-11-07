@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -9,8 +10,8 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { User } from '@users/entities/user.entity';
 import { LoginDto } from '@shared-models/dtos/auth/login.dto';
-import { UserResponseDto } from '@shared-models/dtos/users/user-response.dto';
 import { JwtPayload } from '@auth/jwt.strategy';
+import { ChangePasswordDto } from '@shared-models/dtos/auth/change-password.dto';
 
 @Injectable()
 export class AuthService {
@@ -20,13 +21,15 @@ export class AuthService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  private signToken(user: UserResponseDto): string {
+  private signToken(user: User): string {
     const payload: JwtPayload = {
       sub: user.id,
-      name: user.name,
+      name: `${user.firstName} ${user.lastName}`,
       email: user.email,
       role: user.role,
+      iat: user.passwordChangedAt?.getTime() || Date.now(),
     };
+    console.log('Signing token with payload: ', payload);
     return this.jwtService.sign(payload);
   }
 
@@ -44,15 +47,35 @@ export class AuthService {
       throw new UnauthorizedException('Invalid password');
     }
 
-    const userDto: UserResponseDto = {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-    };
-
     return {
-      access_token: this.signToken(userDto),
+      access_token: this.signToken(user),
     };
+  }
+
+  async changePassword(
+    userId: number,
+    dto: ChangePasswordDto,
+  ): Promise<{ message: string }> {
+    if (dto.newPassword !== dto.confirmPassword) {
+      throw new BadRequestException(
+        "Confirm password doesn't match new password",
+      );
+    }
+
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) throw new NotFoundException('User not found');
+
+    const isValid = await bcrypt.compare(
+      dto.currentPassword,
+      user.passwordHash,
+    );
+    if (!isValid)
+      throw new BadRequestException('Current password is incorrect');
+
+    user.passwordHash = await bcrypt.hash(dto.newPassword, 10);
+    user.passwordChangedAt = new Date();
+
+    await this.userRepository.save(user);
+    return { message: 'Password updated successfully' };
   }
 }

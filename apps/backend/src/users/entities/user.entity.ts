@@ -3,8 +3,10 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
+  OneToOne,
 } from 'typeorm';
 import { Role } from '@shared-models/enums/auth/role.enum';
+import { UserSettings } from '@users/entities/user-settings.entity';
 
 @Entity()
 export class User {
@@ -12,7 +14,10 @@ export class User {
   id!: number;
 
   @Column()
-  name!: string;
+  firstName!: string;
+
+  @Column()
+  lastName!: string;
 
   @Column({ unique: true })
   email!: string;
@@ -20,12 +25,21 @@ export class User {
   @Column()
   passwordHash!: string;
 
+  @Column({ type: 'timestamptz', nullable: true })
+  passwordChangedAt?: Date;
+
   @Column({
     type: 'enum',
     enum: Role,
     default: Role.CLIENT,
   })
   role!: Role;
+
+  @OneToOne(() => UserSettings, (settings) => settings.user, {
+    cascade: true,
+    eager: true,
+  })
+  settings!: UserSettings;
 
   @CreateDateColumn()
   createdAt!: Date;

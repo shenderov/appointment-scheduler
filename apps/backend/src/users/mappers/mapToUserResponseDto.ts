@@ -4,7 +4,7 @@ import { User } from '@users/entities/user.entity';
 export function mapToUserResponseDto(user: User): UserResponseDto {
   return {
     id: user.id,
-    name: user.name,
+    name: `${user.firstName} ${user.lastName}`,
     email: user.email,
     role: user.role,
   };

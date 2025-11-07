@@ -17,7 +17,7 @@ export function mapToPublicProviderDto(
     serviceIds: (provider.services || []).map((s) => s.id),
     user: {
       id: provider.user.id,
-      name: provider.user.name,
+      name: `${provider.user.firstName} ${provider.user.lastName}`,
     },
   };
 }

@@ -12,12 +12,12 @@ export function toAppointmentInfoClientDto(
       title: entity.provider.title,
       user: {
         id: entity.provider.user.id,
-        name: entity.provider.user.name,
+        name: `${entity.provider.user.firstName} ${entity.provider.user.lastName}`,
       },
     },
     client: {
       id: entity.client.id,
-      name: entity.client.name,
+      name: `${entity.client.firstName} ${entity.client.lastName}`,
     },
     service: {
       id: entity.service.id,
